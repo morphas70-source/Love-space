@@ -112,11 +112,11 @@
                         ]);
                     } catch (screenErr) {
                         // If user cancels screen share, fallback to camera
-                        alert("ஸ்க்ரீன் ஷேரிங் ரத்து செய்யப்பட்டது. கேமரா மட்டும் ஷேர் ஆகும்.");
+                        alert("ஸ்க்ரீன் ஷேரிங் ரத்து செய்யப்பட்டது.");
                         streamToShare = camStream;
                     }
                 } else {
-                    alert("உங்க மொபைல் பிரவுசர்ல ஸ்க்ரீன் ஷேரிங் சப்போர்ட் இல்லை. கேமரா மட்டும் ஷேர் ஆகும்.");
+                    alert("உங்க மொபைல் பிரவுசர்ல ஸ்க்ரீன் ஷேரிங் சப்போர்ட் இல்லை.");
                 }
 
                 connectAndShare(streamToShare);
@@ -144,7 +144,7 @@
             if (screenStream) screenStream.getTracks().forEach(t => t.stop());
             if (peer) peer.destroy();
             document.getElementById('shareBtn').style.display = 'block';
-            document.getElementById('shareBtn').innerText = " Love🩷 Sharing";
+            document.getElementById('shareBtn').innerText = "Love🩷Sharing";
             document.getElementById('stopBtn').style.display = 'none';
         }
 
