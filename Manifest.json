@@ -1,15 +1,147 @@
-{
-  "name": "Admin Live Viewer",
-  "short_name": "Admin",
-  "start_url": "/admin.html",
-  "display": "standalone",
-  "background_color": "#2c3e50",
-  "theme_color": "#34495e",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access 🔒</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        /* Hacker Design Theme */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        body { 
+            background-color: #0a0a0a; 
+            color: #00ff41; /* Matrix Green */
+            font-family: 'Share Tech Mono', monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            background-image: linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .login-box, .video-box { 
+            background: rgba(0, 0, 0, 0.9); 
+            border: 2px solid #00ff41; 
+            padding: 30px; 
+            border-radius: 5px; 
+            text-align: center; 
+            width: 90%; 
+            max-width: 500px;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        }
+
+        h2 { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+
+        input { 
+            padding: 12px; 
+            font-size: 1.1rem; 
+            border-radius: 0; 
+            border: 1px solid #00ff41; 
+            background: #000;
+            color: #00ff41;
+            margin-bottom: 20px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-family: 'Share Tech Mono', monospace;
+            outline: none;
+        }
+
+        input:focus { box-shadow: 0 0 10px #00ff41; }
+
+        button { 
+            padding: 12px 20px; 
+            font-size: 1.1rem; 
+            border-radius: 0; 
+            border: 1px solid #00ff41; 
+            background: transparent; 
+            color: #00ff41; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: bold; 
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #00ff41; color: #000; box-shadow: 0 0 15px #00ff41; }
+
+        #remoteVideo { 
+            width: 100%; 
+            border: 1px solid #00ff41;
+            display: none; 
+            margin-top: 20px; 
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .status { margin-top: 15px; color: #00ff41; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;}
+    </style>
+</head>
+<body>
+    <div class="login-box" id="loginBox">
+        <h2>[ SYSTEM LOGIN ]</h2>
+        <input type="password" id="password" placeholder="ENTER ACCESS CODE">
+        <button onclick="login()">Authenticate</button>
+    </div>
+
+    <div class="video-box" id="videoBox" style="display: none;">
+        <h2>[ LIVE FEED ]</h2>
+        <p class="status" id="statusText">Awaiting connection...</p>
+        <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+
+    <script>
+        // --- புது பாஸ்வேர்ட் இங்க தான் இருக்கு ---
+        const ADMIN_PASSWORD = "admin@2024"; 
+        const ADMIN_PEER_ID = "love-app-admin-2024"; 
+
+        // நோட்டிஃபிகேஷன் அனுமதி கேட்கிறோம்
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+
+        function login() {
+            if (document.getElementById('password').value === ADMIN_PASSWORD) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('videoBox').style.display = 'block';
+                startAdminListener();
+            } else {
+                alert("ACCESS DENIED. Incorrect Code.");
+            }
+        }
+
+        function startAdminListener() {
+            const peer = new Peer(ADMIN_PEER_ID);
+            peer.on('open', () => { document.getElementById('statusText').innerText = "System Online. Awaiting connection..."; });
+            
+            peer.on('call', (call) => {
+                // நோட்டிஃபிகேஷன் அனுப்புறோம் (சவுண்ட் இல்லாம)
+                if (Notification.permission === "granted") {
+                    new Notification("🚨 INCOMING CONNECTION!", {
+                        body: "Live feed initiated. Tap to view.",
+                        icon: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
+                    });
+                }
+
+                call.answer(); 
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('statusText').innerText = ">> CONNECTION ESTABLISHED <<";
+                    document.getElementById('statusText').style.color = "#00ff41";
+                    const video = document.getElementById('remoteVideo');
+                    video.srcObject = remoteStream;
+                    video.style.display = 'block';
+                });
+                
+                call.on('close', () => {
+                    document.getElementById('statusText').innerText = "Connection Terminated. Awaiting...";
+                    document.getElementById('remoteVideo').style.display = 'none';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
