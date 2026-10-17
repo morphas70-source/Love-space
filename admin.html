@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard 🔒</title>
-    
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         body { background: #2c3e50; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
@@ -31,12 +28,12 @@
         <video id="remoteVideo" autoplay playsinline></video>
     </div>
 
-    <!-- ரிங் சவுண்ட் -->
     <audio id="ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop></audio>
 
     <script>
         const ADMIN_PASSWORD = "mysecret123"; 
         const ADMIN_PEER_ID = "love-app-admin-2024"; 
+        const ringtone = document.getElementById('ringtone');
 
         if ("Notification" in window) {
             Notification.requestPermission();
@@ -44,13 +41,17 @@
 
         function login() {
             if (document.getElementById('password').value === ADMIN_PASSWORD) {
+                
+                // --- முக்கிய ட்ரிக்: லாகின் பண்ணும்போது ஆடியோவை சைலண்ட்டா ஆன் பண்ணி உடனே ஆஃப் பண்றோம் ---
+                ringtone.volume = 0; 
+                ringtone.play().then(() => {
+                    ringtone.pause();
+                    ringtone.currentTime = 0;
+                    ringtone.volume = 1; // மறுபடியும் சத்தத்தை ஆன் பண்றோம்
+                }).catch(e => console.log("Audio unlock failed"));
+
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('videoBox').style.display = 'block';
-                
-                // மொபைல் பிரவுசர் ஆடியோ பாலிசியை அன்லாக் பண்றோம்
-                const ringtone = document.getElementById('ringtone');
-                ringtone.play().then(() => ringtone.pause()).catch(e => console.log("Audio needs click"));
-
                 startAdminListener();
             } else {
                 alert("Wrong Password!");
@@ -62,8 +63,8 @@
             peer.on('open', () => { document.getElementById('statusText').innerText = "Online! Waiting..."; });
             
             peer.on('call', (call) => {
-                const ringtone = document.getElementById('ringtone');
-                ringtone.play().catch(e => console.log("Autoplay blocked"));
+                // இப்போ ரிங் சவுண்ட் நல்லா அடிக்கும்
+                ringtone.play().catch(e => console.log("Play blocked"));
 
                 if (Notification.permission === "granted") {
                     new Notification("💖 Someone is Calling!", {
