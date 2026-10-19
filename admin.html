@@ -1,185 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Access 🔒</title>
-    <link rel="manifest" href="manifest.json">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <title>NexusChat - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-        body { 
-            background-color: #0a0a0a; 
-            color: #00ff41; 
-            font-family: 'Share Tech Mono', monospace; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            background-image: linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .login-box, .video-box { 
-            background: rgba(0, 0, 0, 0.9); 
-            border: 2px solid #00ff41; 
-            padding: 30px; 
-            border-radius: 5px; 
-            text-align: center; 
-            width: 90%; 
-            max-width: 500px;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
-        }
-
-        h2 { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-
-        input { 
-            padding: 12px; 
-            font-size: 1.1rem; 
-            border-radius: 0; 
-            border: 1px solid #00ff41; 
-            background: #000;
-            color: #00ff41;
-            margin-bottom: 20px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            font-family: 'Share Tech Mono', monospace;
-            outline: none;
-        }
-
-        input:focus { box-shadow: 0 0 10px #00ff41; }
-
-        button { 
-            padding: 12px 20px; 
-            font-size: 1.1rem; 
-            border-radius: 0; 
-            border: 1px solid #00ff41; 
-            background: transparent; 
-            color: #00ff41; 
-            cursor: pointer; 
-            width: 100%; 
-            font-weight: bold; 
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        button:hover { background: #00ff41; color: #000; box-shadow: 0 0 15px #00ff41; }
-
-        #remoteVideo { 
-            width: 100%; 
-            border: 1px solid #00ff41;
-            display: none; 
-            margin-top: 20px; 
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-        }
-
-        .status { margin-top: 15px; color: #00ff41; font-weight: bold; text-transform: uppercase; font-size: 0.9rem;}
-        
-        /* Location Link Style */
-        #locationContainer { margin-top: 15px; font-size: 1.1rem; word-break: break-all; }
-        #locationContainer a { color: #00ff41; text-decoration: underline; font-weight: bold; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%); min-height: 100vh; }
     </style>
 </head>
-<body>
-    <div class="login-box" id="loginBox">
-        <h2>[ SYSTEM LOGIN ]</h2>
-        <input type="password" id="password" placeholder="ENTER ACCESS CODE">
-        <button onclick="login()">Authenticate</button>
+<body class="text-white font-sans flex items-center justify-center p-4">
+    <div class="w-full max-w-md h-[85vh] bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <!-- Header -->
+        <div class="p-4 bg-black/20 border-b border-white/10 flex justify-between items-center">
+            <h2 class="text-lg font-bold">🛡️ Admin Panel</h2>
+            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">Viewer Online</span>
+        </div>
+        
+        <!-- Chat Area -->
+        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
+            <!-- Messages will appear here -->
+        </div>
+
+        <!-- Input Area -->
+        <form id="chat-form" class="p-4 bg-black/20 border-t border-white/10 flex gap-2">
+            <input type="text" id="message-input" placeholder="Type a reply..." class="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-blue-500" required>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/30">Send</button>
+        </form>
     </div>
 
-    <div class="video-box" id="videoBox" style="display: none;">
-        <h2>[ LIVE FEED ]</h2>
-        <p class="status" id="statusText">Awaiting connection...</p>
-        <div id="locationContainer"></div>
-        <video id="remoteVideo" autoplay playsinline></video>
-    </div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        const ADMIN_PASSWORD = "admin@2024"; 
-        const ADMIN_PEER_ID = "love-app-admin-2024"; 
+        // ⚠️ இங்கே உங்கள் Firebase Config-ஐ பேஸ்ட் செய்யவும்
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-        if ("Notification" in window) {
-            Notification.requestPermission();
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const messagesRef = db.ref('messages');
 
-        function login() {
-            if (document.getElementById('password').value === ADMIN_PASSWORD) {
-                document.getElementById('loginBox').style.display = 'none';
-                document.getElementById('videoBox').style.display = 'block';
-                startAdminListener();
-            } else {
-                alert("ACCESS DENIED. Incorrect Code.");
+        const chatBox = document.getElementById('chat-box');
+        const form = document.getElementById('chat-form');
+        const input = document.getElementById('message-input');
+
+        // மெசேஜ் அனுப்புதல்
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (text) {
+                messagesRef.push({ sender: 'Admin', text: text, timestamp: Date.now() });
+                input.value = '';
             }
-        }
+        });
 
-        function startAdminListener() {
-            const peer = new Peer(ADMIN_PEER_ID);
-            peer.on('open', () => { document.getElementById('statusText').innerText = "System Online. Awaiting connection..."; });
-            
-            // 1. Video Call Receiver
-            peer.on('call', (call) => {
-                call.answer(); 
-                call.on('stream', (remoteStream) => {
-                    document.getElementById('statusText').innerText = ">> VIDEO FEED ACTIVE <<";
-                    document.getElementById('statusText').style.color = "#2ecc71";
-                    const video = document.getElementById('remoteVideo');
-                    video.srcObject = remoteStream;
-                    video.style.display = 'block';
+        // மெசேஜ் பெறுதல்
+        messagesRef.on('value', (snapshot) => {
+            chatBox.innerHTML = '';
+            const messages = snapshot.val();
+            if (messages) {
+                Object.values(messages).forEach(msg => {
+                    const isAdmin = msg.sender === 'Admin';
+                    const div = document.createElement('div');
+                    div.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'}`;
+                    div.innerHTML = `
+                        <div class="max-w-[80%] p-3 rounded-xl text-sm ${isAdmin ? 'bg-blue-600/50 border border-blue-400/30' : 'bg-white/10 border border-white/10'}">
+                            <span class="text-[10px] text-gray-300 block mb-1">${msg.sender}</span>
+                            <p>${msg.text}</p>
+                        </div>
+                    `;
+                    chatBox.appendChild(div);
                 });
-                
-                call.on('close', () => {
-                    document.getElementById('statusText').innerText = "Connection Terminated. Awaiting...";
-                    document.getElementById('statusText').style.color = "#00ff41";
-                    document.getElementById('remoteVideo').style.display = 'none';
-                });
-            });
-
-            // 2. Data Receiver (Notifications & Location)
-            peer.on('connection', (conn) => {
-                conn.on('data', (data) => {
-                    // Ring Alert
-                    if (data.type === 'ring_alert') {
-                        if (Notification.permission === "granted") {
-                            new Notification("💍 ALERT!", {
-                                body: data.msg,
-                                icon: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
-                            });
-                        }
-                        playBeep();
-                    }
-                    
-                    // Location Alert
-                    if (data.type === 'location_alert') {
-                        if (Notification.permission === "granted") {
-                            new Notification("📍 Location Received!", {
-                                body: "She sent you her live location!",
-                                icon: "https://cdn-icons-png.flaticon.com/512/1077/1077114.png"
-                            });
-                        }
-                        playBeep();
-                        
-                        const locContainer = document.getElementById('locationContainer');
-                        locContainer.innerHTML = `<a href="https://www.google.com/maps?q=${data.lat},${data.lon}" target="_blank">🗺️ CLICK TO VIEW LOCATION</a>`;
-                    }
-                });
-            });
-        }
-        
-        function playBeep() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                oscillator.type = 'square';
-                oscillator.frequency.value = 800;
-                oscillator.connect(audioCtx.destination);
-                oscillator.start();
-                setTimeout(() => oscillator.stop(), 200);
-            } catch(e) {}
-        }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
     </script>
 </body>
 </html>
