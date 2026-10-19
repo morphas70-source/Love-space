@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusChat - Admin Panel</title>
+    <title>NexusChat - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%); min-height: 100vh; }
@@ -11,20 +11,20 @@
 </head>
 <body class="text-white font-sans flex items-center justify-center p-4">
     <div class="w-full max-w-md h-[85vh] bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        
         <!-- Header -->
         <div class="p-4 bg-black/20 border-b border-white/10 flex justify-between items-center">
             <h2 class="text-lg font-bold">🛡️ Admin Panel</h2>
-            <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">Viewer Online</span>
+            <span id="viewer-status" class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded-full border border-red-500/30">Viewer Offline</span>
         </div>
         
         <!-- Chat Area -->
-        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
-            <!-- Messages will appear here -->
-        </div>
+        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col"></div>
+        <div id="typing-indicator" class="px-4 pb-2 text-xs text-gray-400 italic hidden">Viewer is typing...</div>
 
         <!-- Input Area -->
         <form id="chat-form" class="p-4 bg-black/20 border-t border-white/10 flex gap-2">
-            <input type="text" id="message-input" placeholder="Type a reply..." class="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-blue-500" required>
+            <input type="text" id="message-input" placeholder="Type a reply..." class="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500" required>
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/30">Send</button>
         </form>
     </div>
@@ -34,51 +34,82 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ⚠️ இங்கே உங்கள் Firebase Config-ஐ பேஸ்ட் செய்யவும்
+        // உங்களோட Firebase Config இங்கே இருக்கு
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyA105KJhAOQxigwc5iltil-aFnz7ykruwI",
+            authDomain: "love-space-3e574.firebaseapp.com",
+            databaseURL: "https://love-space-3e574-default-rtdb.firebaseio.com",
+            projectId: "love-space-3e574",
+            storageBucket: "love-space-3e574.firebasestorage.app",
+            messagingSenderId: "9834363623",
+            appId: "1:9834363623:web:829d60de594b3e7c850042"
         };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const messagesRef = db.ref('messages');
+        const statusRef = db.ref('status/viewer');
+        const typingRef = db.ref('typing/viewer');
+
+        // Live Status - Admin sets online
+        const connectedRef = db.ref('.info/connected');
+        connectedRef.on('value', (snap) => {
+            if (snap.val() === true) {
+                db.ref('status/admin').onDisconnect().set(false);
+                db.ref('status/admin').set(true);
+            }
+        });
+
+        // Listen to Viewer Status
+        statusRef.on('value', (snap) => {
+            const el = document.getElementById('viewer-status');
+            if (snap.val() === true) {
+                el.className = "text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30";
+                el.innerText = "Viewer Online";
+            } else {
+                el.className = "text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded-full border border-red-500/30";
+                el.innerText = "Viewer Offline";
+            }
+        });
+
+        // Listen to Viewer Typing
+        typingRef.on('value', (snap) => {
+            const el = document.getElementById('typing-indicator');
+            snap.val() === true ? el.classList.remove('hidden') : el.classList.add('hidden');
+        });
 
         const chatBox = document.getElementById('chat-box');
         const form = document.getElementById('chat-form');
         const input = document.getElementById('message-input');
 
-        // மெசேஜ் அனுப்புதல்
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const text = input.value.trim();
             if (text) {
                 messagesRef.push({ sender: 'Admin', text: text, timestamp: Date.now() });
                 input.value = '';
+                db.ref('typing/admin').set(false);
             }
         });
 
-        // மெசேஜ் பெறுதல்
+        input.addEventListener('input', () => {
+            db.ref('typing/admin').set(input.value.length > 0);
+        });
+
         messagesRef.on('value', (snapshot) => {
             chatBox.innerHTML = '';
             const messages = snapshot.val();
             if (messages) {
                 Object.values(messages).forEach(msg => {
                     const isAdmin = msg.sender === 'Admin';
-                    const div = document.createElement('div');
-                    div.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'}`;
-                    div.innerHTML = `
-                        <div class="max-w-[80%] p-3 rounded-xl text-sm ${isAdmin ? 'bg-blue-600/50 border border-blue-400/30' : 'bg-white/10 border border-white/10'}">
-                            <span class="text-[10px] text-gray-300 block mb-1">${msg.sender}</span>
-                            <p>${msg.text}</p>
+                    chatBox.innerHTML += `
+                        <div class="flex ${isAdmin ? 'justify-end' : 'justify-start'}">
+                            <div class="max-w-[80%] p-3 rounded-xl text-sm ${isAdmin ? 'bg-blue-600/50 border border-blue-400/30' : 'bg-white/10 border border-white/10'}">
+                                <span class="text-[10px] text-gray-300 block mb-1">${msg.sender}</span>
+                                <p>${msg.text}</p>
+                            </div>
                         </div>
                     `;
-                    chatBox.appendChild(div);
                 });
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
